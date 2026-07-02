@@ -20,7 +20,10 @@
     "lucide-react": "^0.359.0",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.2",
-    "shared": "workspace:*"
+    "shared": "workspace:*",
+    "wagmi": "^2.10.4",
+    "viem": "^2.13.5",
+    "connectkit": "^1.8.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

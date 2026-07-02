@@ -8,6 +8,7 @@ import MoveHistoryPanel from './MoveHistoryPanel';
 import AiThinkingPanel from './AiThinkingPanel';
 import VotingTimer from '../voting/VotingTimer';
 import VotingPanel from '../voting/VotingPanel';
+import WalletConnectButton from '../layout/WalletConnectButton';
 
 export const ArenaPage: React.FC = () => {
   return (
@@ -23,10 +24,11 @@ export const ArenaPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-xs bg-[#b58863]/10 border border-[#b58863]/30 px-3 py-1.5 rounded-lg font-bold text-[#b58863]">
+        <div className="flex items-center gap-4">
+          <div className="text-xs bg-[#b58863]/10 border border-[#b58863]/30 px-3 py-1.5 rounded-lg font-bold text-[#b58863] hidden md:inline-block">
             Testnet Mode (Base Sepolia)
           </div>
+          <WalletConnectButton />
         </div>
       </header>
 
