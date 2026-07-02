@@ -2,6 +2,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { logger } from './shared/logger';
+import gamesRouter from './modules/games/games.routes';
 
 const app: Express = express();
 
@@ -10,6 +11,9 @@ app.use(cors({
   origin: '*', // Di production ganti dengan domain frontend resmi
 }));
 app.use(express.json());
+
+// Routes
+app.use('/api/games', gamesRouter);
 
 // Request logger middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
