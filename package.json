@@ -17,5 +17,19 @@
   },
   "overrides": {
     "prettier": "^3.9.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "prisma",
+      "@prisma/engines",
+      "esbuild",
+      "keccak",
+      "secp256k1",
+      "sharp",
+      "bufferutil",
+      "utf-8-validate",
+      "styled-components"
+    ]
   }
 }
