@@ -1,0 +1,131 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String   @id @default(cuid())
+  address     String   @unique
+  createdAt   DateTime @default(now())
+  lastLoginAt DateTime?
+  bets        Bet[]
+}
+
+model Game {
+  id             String   @id
+  chainGameId    String   @unique
+  status         String
+  result         String?
+  currentFen     String
+  currentTurn    String
+  turnNumber     Int      @default(1)
+  turnStatus     String   @default("OPEN")
+  winner         String?
+  whitePoolWei   String   @default("0")
+  blackPoolWei   String   @default("0")
+  rewardPoolWei  String   @default("0")
+  feeAmountWei   String   @default("0")
+  noVoteCount    Int      @default(0)
+  maxTurns       Int      @default(120)
+  contractTxHash String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  turns          Turn[]
+  bets           Bet[]
+  moves          Move[]
+}
+
+model Turn {
+  id              String   @id @default(cuid())
+  gameId          String
+  turnNumber      Int
+  team            String
+  status          String
+  openedAt        DateTime
+  endsAt          DateTime?
+  lockedAt        DateTime?
+  resolvedAt      DateTime?
+  voteReopenCount Int      @default(0)
+  lockedTxHash    String?
+  winningPiece    String?
+  game            Game     @relation(fields: [gameId], references: [id])
+
+  @@unique([gameId, turnNumber])
+}
+
+model Bet {
+  id          String    @id @default(cuid())
+  gameId      String
+  userId      String
+  address     String
+  turnNumber  Int
+  team        String
+  piece       String
+  amountWei   String
+  status      String
+  txHash      String    @unique
+  blockNumber BigInt?
+  logIndex    Int?
+  isLate      Boolean   @default(false)
+  confirmedAt DateTime?
+  refundedAt  DateTime?
+  claimedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  game        Game      @relation(fields: [gameId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@unique([gameId, turnNumber, address])
+}
+
+model Move {
+  id          String   @id @default(cuid())
+  gameId      String
+  turnNumber  Int
+  fromSquare  String
+  toSquare    String
+  piece       String
+  san         String
+  uci         String
+  fenBefore   String
+  fenAfter    String
+  aiEval      String?
+  createdAt   DateTime @default(now())
+  game        Game     @relation(fields: [gameId], references: [id])
+}
+
+model PlayerGameState {
+  id         String   @id @default(cuid())
+  gameId     String
+  userId     String
+  address    String
+  lockedTeam String
+  createdAt  DateTime @default(now())
+
+  @@unique([gameId, address])
+}
+
+model ChainEvent {
+  id          String   @id @default(cuid())
+  chainId     Int
+  blockNumber BigInt
+  txHash      String
+  logIndex    Int
+  eventName   String
+  payload     Json
+  processedAt DateTime @default(now())
+
+  @@unique([chainId, txHash, logIndex])
+}
+
+model IndexerState {
+  id               String   @id
+  chainId          Int
+  contractAddress  String
+  deploymentBlock  BigInt
+  lastIndexedBlock BigInt
+  updatedAt        DateTime @updatedAt
+}
