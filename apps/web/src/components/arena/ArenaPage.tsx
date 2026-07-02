@@ -9,8 +9,11 @@ import AiThinkingPanel from './AiThinkingPanel';
 import VotingTimer from '../voting/VotingTimer';
 import VotingPanel from '../voting/VotingPanel';
 import WalletConnectButton from '../layout/WalletConnectButton';
+import { useArenaSocket } from '../../hooks/useArenaSocket';
 
 export const ArenaPage: React.FC = () => {
+  useArenaSocket();
+
   return (
     <div className="min-h-screen bg-[#1e1713] text-[#eedcbf] flex flex-col">
       {/* Header */}

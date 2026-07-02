@@ -4,22 +4,24 @@ import React, { useEffect } from 'react';
 import { useArenaStore } from '../../stores/arena-store';
 
 export const VotingTimer: React.FC = () => {
-  const { timeLeft, turnStatus, setGameState, currentTurn } = useArenaStore();
+  const { timeLeft, turnStatus, setGameState, currentTurn, turnEndsAt } = useArenaStore();
 
   useEffect(() => {
     if (turnStatus !== 'OPEN') return;
 
     const timer = setInterval(() => {
-      if (timeLeft > 0) {
-        setGameState({ timeLeft: timeLeft - 1 });
+      if (turnEndsAt) {
+        const diff = Math.max(0, Math.floor((new Date(turnEndsAt).getTime() - Date.now()) / 1000));
+        setGameState({ timeLeft: diff });
       } else {
-        // Tiru turn lock mock ketika timer habis
-        setGameState({ turnStatus: 'LOCKED' });
+        if (timeLeft > 0) {
+          setGameState({ timeLeft: timeLeft - 1 });
+        }
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, turnStatus, setGameState]);
+  }, [timeLeft, turnStatus, setGameState, turnEndsAt]);
 
   const percentage = (timeLeft / 20) * 100;
   const isLowTime = timeLeft <= 5;

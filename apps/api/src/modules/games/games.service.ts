@@ -41,6 +41,22 @@ export class GamesService {
   }
 
   /**
+   * Mengambil game aktif terakhir atau membuat baru jika belum ada
+   */
+  public static async getActiveGameOrCreate() {
+    let game = await prisma.game.findFirst({
+      where: { status: 'ACTIVE' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!game) {
+      game = await this.createGame();
+    }
+
+    return game;
+  }
+
+  /**
    * Ambil state game terlengkap
    */
   public static async getGameState(gameId: string) {

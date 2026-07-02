@@ -23,6 +23,28 @@ export class GamesController {
     }
   }
 
+  public static async getActiveGame(req: Request, res: Response) {
+    try {
+      const game = await GamesService.getActiveGameOrCreate();
+      const state = await GamesService.getGameState(game.id);
+      
+      res.json({
+        ok: true,
+        data: state,
+        error: null,
+      });
+    } catch (e: any) {
+      res.status(500).json({
+        ok: false,
+        data: null,
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: e.message,
+        },
+      });
+    }
+  }
+
   public static async getGameState(req: Request, res: Response) {
     try {
       const { gameId } = req.params;
