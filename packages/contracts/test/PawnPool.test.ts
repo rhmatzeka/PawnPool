@@ -1,10 +1,10 @@
-import { expect } from "chai";
-import { ethers } from "hardhat";
-import { PawnPool } from "../typechain-types";
-import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
+import type { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
+
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 describe("PawnPool", function () {
-  let pawnPool: PawnPool;
+  let pawnPool: any;
   let admin: SignerWithAddress;
   let operator: SignerWithAddress;
   let treasury: SignerWithAddress;

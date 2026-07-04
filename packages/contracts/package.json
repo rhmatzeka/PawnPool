@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "compile": "hardhat compile",
-    "build": "hardhat compile",
-    "test": "hardhat test",
+    "compile": "../../node_modules/.bin/hardhat compile",
+    "build": "../../node_modules/.bin/hardhat compile",
+    "test": "../../node_modules/.bin/hardhat test test/PawnPool.test.ts",
     "typecheck": "tsc --noEmit",
-    "deploy:base-sepolia": "hardhat run scripts/deploy.ts --network baseSepolia",
-    "verify:base-sepolia": "hardhat verify --network baseSepolia"
+    "deploy:base-sepolia": "../../node_modules/.bin/hardhat run scripts/deploy.ts --network baseSepolia",
+    "verify:base-sepolia": "../../node_modules/.bin/hardhat verify --network baseSepolia"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"
