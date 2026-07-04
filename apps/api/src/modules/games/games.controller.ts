@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { GamesService } from './games.service';
 import { z } from 'zod';
+import { env } from '../../config/env';
 
 export class GamesController {
   public static async createGame(req: Request, res: Response) {
@@ -124,6 +125,9 @@ export class GamesController {
       } else if (e.message === 'ALREADY_BET_THIS_TURN') {
         status = 400;
         code = 'ALREADY_BET_THIS_TURN';
+      } else if (e.message === 'WRONG_TEAM_TURN') {
+        status = 400;
+        code = 'WRONG_TEAM_TURN';
       }
 
       res.status(status).json({
@@ -145,7 +149,7 @@ export class GamesController {
       const authHeader = req.headers['authorization'];
       const apiKey = authHeader && authHeader.split(' ')[1];
       
-      if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
+      if (!apiKey || apiKey !== env.ADMIN_API_KEY) {
         return res.status(401).json({
           ok: false,
           data: null,

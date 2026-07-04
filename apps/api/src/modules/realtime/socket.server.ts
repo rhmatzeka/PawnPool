@@ -1,6 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { logger } from '../../shared/logger';
+import { GamesService } from '../games/games.service';
 
 export class SocketServer {
   private static instance: Server | null = null;
@@ -25,7 +26,7 @@ export class SocketServer {
 
       let currentRoom: string | null = null;
 
-      socket.on('arena:join', (payload: { gameId: string }) => {
+      socket.on('arena:join', async (payload: { gameId: string }) => {
         const { gameId } = payload;
         const roomName = `arena:${gameId}`;
         
@@ -46,6 +47,11 @@ export class SocketServer {
           gameId,
           count: this.spectatorCounts.get(roomName) || 1,
         });
+
+        const state = await GamesService.getGameState(gameId);
+        if (state) {
+          socket.emit('game:state', state);
+        }
       });
 
       socket.on('arena:leave', () => {

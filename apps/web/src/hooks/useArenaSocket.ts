@@ -75,6 +75,28 @@ export const useArenaSocket = () => {
       setGameState({ spectatorCount: data.count });
     });
 
+    socket.on('game:state', (game) => {
+      let timeLeft = 20;
+      if (game.turnEndsAt) {
+        timeLeft = Math.max(0, Math.floor((new Date(game.turnEndsAt).getTime() - Date.now()) / 1000));
+      }
+
+      setGameState({
+        activeGameId: game.gameId,
+        status: game.status,
+        result: game.result,
+        fen: game.fen,
+        currentTurn: game.currentTurn,
+        turnNumber: game.turnNumber,
+        turnStatus: game.turnStatus as TurnStatus,
+        turnEndsAt: game.turnEndsAt,
+        timeLeft,
+        whitePoolWei: game.whitePoolWei,
+        blackPoolWei: game.blackPoolWei,
+        votes: game.votes,
+      });
+    });
+
     socket.on('vote:updated', (data: { votes: any[] }) => {
       setGameState({ votes: data.votes });
     });
@@ -122,9 +144,10 @@ export const useArenaSocket = () => {
       turnNumber: number;
       currentTurn: 'WHITE' | 'BLACK';
       turnStatus: string;
-      turnEndsAt: string;
+      turnEndsAt: string | null;
+      message?: string;
     }) => {
-      const diff = Math.max(0, Math.floor((new Date(data.turnEndsAt).getTime() - Date.now()) / 1000));
+      const diff = data.turnEndsAt ? Math.max(0, Math.floor((new Date(data.turnEndsAt).getTime() - Date.now()) / 1000)) : 0;
       setGameState({
         turnNumber: data.turnNumber,
         currentTurn: data.currentTurn,

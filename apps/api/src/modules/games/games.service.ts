@@ -2,8 +2,14 @@ import { prisma } from '../../shared/prisma';
 import { ChessStateService } from './chess-state.service';
 import { SocketServer } from '../realtime/socket.server';
 import { logger } from '../../shared/logger';
-import { INITIAL_FEN } from '../../shared/constants';
+import { INITIAL_FEN, MAX_HALF_MOVES, MAX_NO_VOTE_REOPEN, PIECE_PRIORITY, VOTING_DURATION_SECONDS } from '../../shared/constants';
 import { MoveResolverService } from '../ai/move-resolver.service';
+
+const TURN_DURATION_MS = VOTING_DURATION_SECONDS * 1000;
+
+function addWei(a: string, b: string) {
+  return (BigInt(a) + BigInt(b)).toString();
+}
 
 export class GamesService {
   /**
@@ -33,7 +39,7 @@ export class GamesService {
         team: 'WHITE',
         status: 'OPEN',
         openedAt: new Date(),
-        endsAt: new Date(Date.now() + 20000), // 20 detik
+        endsAt: new Date(Date.now() + TURN_DURATION_MS),
       },
     });
 
@@ -84,13 +90,19 @@ export class GamesService {
     const voteTalies = ['PAWN', 'KNIGHT', 'BISHOP', 'ROOK', 'QUEEN', 'KING'].map((p) => {
       const pieceBets = bets.filter((b: any) => b.piece === p);
       const totalAmountWei = pieceBets
-        .reduce((sum: number, b: any) => sum + parseFloat(b.amountWei), 0)
-        .toFixed(4); // simulate string fixed float atau simpan wei string
+        .reduce((sum: bigint, b: any) => sum + BigInt(b.amountWei), 0n)
+        .toString();
+
+      const firstBetAt = pieceBets.reduce<string | null>((earliest: string | null, b: any) => {
+        const createdAt = b.createdAt instanceof Date ? b.createdAt.toISOString() : String(b.createdAt);
+        return !earliest || createdAt < earliest ? createdAt : earliest;
+      }, null);
 
       return {
         piece: p,
         totalAmountWei,
         bettorCount: pieceBets.length,
+        firstBetAt,
       };
     });
 
@@ -130,6 +142,10 @@ export class GamesService {
 
     if (game.turnStatus !== 'OPEN') {
       throw new Error('TURN_LOCKED');
+    }
+
+    if (team !== game.currentTurn) {
+      throw new Error('WRONG_TEAM_TURN');
     }
 
     // Cek team lock
@@ -192,8 +208,8 @@ export class GamesService {
 
     // Update pool
     const newPool = team === 'WHITE'
-      ? { whitePoolWei: String(parseFloat(game.whitePoolWei) + parseFloat(amountWei)) }
-      : { blackPoolWei: String(parseFloat(game.blackPoolWei) + parseFloat(amountWei)) };
+      ? { whitePoolWei: addWei(game.whitePoolWei, amountWei) }
+      : { blackPoolWei: addWei(game.blackPoolWei, amountWei) };
 
     await prisma.game.update({
       where: { id: gameId },
@@ -252,19 +268,23 @@ export class GamesService {
 
     // Hitung votes
     const votesTally = await this.getGameState(gameId);
-    const validVotes = votesTally?.votes.filter((v) => parseFloat(v.totalAmountWei) > 0) || [];
+    const validVotes = votesTally?.votes.filter((v) => BigInt(v.totalAmountWei) > 0n) || [];
 
     // TIE BREAK & WINNING PIECE DETERMINATION
     let winningPiece = '';
     let fallbackPieces: string[] = [];
 
     if (validVotes.length > 0) {
-      // Sort berdasarkan totalAmountWei desc, lalu jumlah bettor desc
+      // Deterministic tie-break: amount desc, bettor count desc, earliest bet, piece priority.
       const sorted = [...validVotes].sort((a, b) => {
-        const amtA = parseFloat(a.totalAmountWei);
-        const amtB = parseFloat(b.totalAmountWei);
-        if (amtB !== amtA) return amtB - amtA;
-        return b.bettorCount - a.bettorCount;
+        const amtA = BigInt(a.totalAmountWei);
+        const amtB = BigInt(b.totalAmountWei);
+        if (amtB !== amtA) return amtB > amtA ? 1 : -1;
+        if (b.bettorCount !== a.bettorCount) return b.bettorCount - a.bettorCount;
+        if (a.firstBetAt && b.firstBetAt && a.firstBetAt !== b.firstBetAt) {
+          return a.firstBetAt < b.firstBetAt ? -1 : 1;
+        }
+        return PIECE_PRIORITY.indexOf(a.piece as any) - PIECE_PRIORITY.indexOf(b.piece as any);
       });
       
       winningPiece = sorted[0].piece;
@@ -274,14 +294,29 @@ export class GamesService {
     // NO VOTE HANDLING
     if (!winningPiece) {
       const currentReopens = currentTurnObj.voteReopenCount;
-      if (currentReopens < 3) {
+      if (currentReopens < MAX_NO_VOTE_REOPEN) {
+        await prisma.game.update({
+          where: { id: gameId },
+          data: { turnStatus: 'WAITING_FOR_VOTE', noVoteCount: game.noVoteCount + 1 },
+        });
+
+        arenaNs.emit('turn:opened', {
+          gameId,
+          turnNumber: game.turnNumber,
+          currentTurn: game.currentTurn,
+          turnStatus: 'WAITING_FOR_VOTE',
+          turnEndsAt: null,
+          message: `Menunggu vote dari team ${game.currentTurn}`,
+        });
+
         // Reopen turn
-        const newEndsAt = new Date(Date.now() + 20000);
+        const newEndsAt = new Date(Date.now() + TURN_DURATION_MS);
         await prisma.turn.update({
           where: { id: currentTurnObj.id },
           data: {
             voteReopenCount: currentReopens + 1,
             endsAt: newEndsAt,
+            status: 'OPEN',
           },
         });
 
@@ -296,7 +331,7 @@ export class GamesService {
           currentTurn: game.currentTurn,
           turnStatus: 'OPEN',
           turnEndsAt: newEndsAt.toISOString(),
-          message: `Menunggu vote dari team ${game.currentTurn} (reopened ${currentReopens + 1}/3)`,
+          message: `Menunggu vote dari team ${game.currentTurn} (reopened ${currentReopens + 1}/${MAX_NO_VOTE_REOPEN})`,
         });
 
         return { status: 'REOPENED' };
@@ -377,6 +412,11 @@ export class GamesService {
       const nextTurnTeam = game.currentTurn === 'WHITE' ? 'BLACK' : 'WHITE';
       const nextTurnNumber = game.turnNumber + 1;
 
+      if (nextTurnNumber > MAX_HALF_MOVES && !gameCheck.isGameOver) {
+        gameCheck.isGameOver = true;
+        gameCheck.result = 'DRAW';
+      }
+
       if (gameCheck.isGameOver && gameCheck.result) {
         // Game Over
         await prisma.game.update({
@@ -414,7 +454,7 @@ export class GamesService {
           },
         });
 
-        const newEndsAt = new Date(Date.now() + 20000);
+        const newEndsAt = new Date(Date.now() + TURN_DURATION_MS);
         await prisma.turn.create({
           data: {
             gameId,
@@ -455,7 +495,7 @@ export class GamesService {
         turnNumber: game.turnNumber,
         currentTurn: game.currentTurn,
         turnStatus: 'OPEN',
-        turnEndsAt: new Date(Date.now() + 20000).toISOString(),
+        turnEndsAt: new Date(Date.now() + TURN_DURATION_MS).toISOString(),
         message: 'AI Resolution failed. Reopening turn for retry.',
       });
 

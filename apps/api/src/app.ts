@@ -12,9 +12,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.use('/api/games', gamesRouter);
-
 // Request logger middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   logger.info({ method: req.method, url: req.url }, 'Incoming request');
@@ -32,6 +29,9 @@ app.get('/api/health', (req: Request, res: Response) => {
     error: null,
   });
 });
+
+// Routes
+app.use('/api/games', gamesRouter);
 
 // Global error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

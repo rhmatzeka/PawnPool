@@ -15,6 +15,7 @@ export interface VoteTally {
   piece: string;
   totalAmountWei: string;
   bettorCount: number;
+  firstBetAt?: string | null;
 }
 
 interface ArenaState {
@@ -44,7 +45,7 @@ interface ArenaState {
 }
 
 export const useArenaStore = create<ArenaState>((set) => ({
-  activeGameId: 'dummy-game-1',
+  activeGameId: null,
   status: 'ACTIVE',
   result: null,
   fen: INITIAL_FEN,

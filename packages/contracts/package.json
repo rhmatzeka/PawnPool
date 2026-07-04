@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "compile": "hardhat compile",
+    "build": "hardhat compile",
     "test": "hardhat test",
-    "deploy:base-sepolia": "hardhat run scripts/deploy.ts --network baseSepolia"
+    "typecheck": "tsc --noEmit",
+    "deploy:base-sepolia": "hardhat run scripts/deploy.ts --network baseSepolia",
+    "verify:base-sepolia": "hardhat verify --network baseSepolia"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"

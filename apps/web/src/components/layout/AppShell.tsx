@@ -6,8 +6,7 @@ import { WagmiProvider, createConfig, http } from 'wagmi';
 import { baseSepolia, localhost } from 'wagmi/chains';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 
-// Gunakan projectId WalletConnect dummy
-const projectId = 'your_project_id_placeholder';
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'your_project_id_placeholder';
 
 const config = createConfig(
   getDefaultConfig({

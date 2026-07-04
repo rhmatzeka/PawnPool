@@ -7,15 +7,7 @@ import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { usePlaceBet } from '../../hooks/usePlaceBet';
 import { parseEther } from 'viem';
-
-const PIECE_PRICES: Record<PieceType, string> = {
-  PAWN: '0.0001',
-  KING: '0.0002',
-  KNIGHT: '0.0003',
-  BISHOP: '0.0003',
-  ROOK: '0.0005',
-  QUEEN: '0.0010',
-};
+import { CHAIN_ID, PIECE_PRICES } from 'shared';
 
 const PIECE_NAMES: Record<PieceType, string> = {
   PAWN: 'Pawn',
@@ -39,7 +31,7 @@ export const VotingPanel: React.FC = () => {
     myLockedTeam,
   } = useArenaStore();
 
-  const { address, isConnected } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
   const { placeBet, isPending, isConfirming } = usePlaceBet();
   const [isVotingLoading, setIsVotingLoading] = useState(false);
 
@@ -55,7 +47,7 @@ export const VotingPanel: React.FC = () => {
     // Hanya boleh vote untuk current turn team
     if (myLockedTeam !== currentTurn) return;
 
-    if (isConnected && address) {
+    if (isConnected && address && chainId === CHAIN_ID) {
       // ON-CHAIN VOTE VIA WALLET
       try {
         await placeBet(activeGameId, turnNumber, currentTurn, piece);
@@ -97,10 +89,10 @@ export const VotingPanel: React.FC = () => {
         // Mock state feedback instan
         const updatedVotes = votes.map((v) => {
           if (v.piece === piece) {
-            const val = parseFloat(v.totalAmountWei) + parseFloat(priceEth);
+            const val = BigInt(v.totalAmountWei) + parseEther(priceEth);
             return {
               ...v,
-              totalAmountWei: val.toFixed(4),
+              totalAmountWei: val.toString(),
               bettorCount: v.bettorCount + 1,
             };
           }
@@ -196,7 +188,8 @@ export const VotingPanel: React.FC = () => {
             const voteData = votes.find((v) => v.piece === piece) || { totalAmountWei: '0', bettorCount: 0 };
             const imgUrl = getAssetPath(piece, currentTurn);
             const isBusy = isPending || isConfirming || isVotingLoading;
-            const isDisabled = !myLockedTeam || turnStatus !== 'OPEN' || isBusy || myLockedTeam !== currentTurn;
+            const isWrongChain = isConnected && chainId !== CHAIN_ID;
+            const isDisabled = !myLockedTeam || turnStatus !== 'OPEN' || isBusy || myLockedTeam !== currentTurn || isWrongChain;
 
             return (
               <button
@@ -222,12 +215,12 @@ export const VotingPanel: React.FC = () => {
                 <div className="w-full text-center">
                   <div className="text-xs font-bold text-[#eedcbf]">{name}</div>
                   <div className="text-[10px] text-[#b58863] font-semibold">
-                    {isBusy ? 'Submitting...' : `${price} ETH`}
+                    {isWrongChain ? 'Switch to Base Sepolia' : isBusy ? 'Submitting...' : `${price} ETH`}
                   </div>
                 </div>
 
                 <div className="w-full border-t border-[#b58863]/10 mt-2 pt-1 flex justify-between text-[9px] text-[#eedcbf]/50 font-mono">
-                  <span>Pool: {voteData.totalAmountWei}</span>
+                  <span>Wei: {voteData.totalAmountWei}</span>
                   <span>Qty: {voteData.bettorCount}</span>
                 </div>
               </button>

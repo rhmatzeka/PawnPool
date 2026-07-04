@@ -1,5 +1,19 @@
-export const CHAIN_ID = 11155111;
-export const CHAIN_NAME = 'Sepolia';
+export const CHAIN_ID = 84532;
+export const CHAIN_NAME = 'Base Sepolia';
+export const SUPPORTED_CHAINS = {
+  baseSepolia: {
+    id: 84532,
+    name: 'Base Sepolia',
+    currency: 'ETH',
+    explorer: 'https://sepolia.basescan.org',
+  },
+  ethereumSepolia: {
+    id: 11155111,
+    name: 'Ethereum Sepolia',
+    currency: 'ETH',
+    explorer: 'https://sepolia.etherscan.io',
+  },
+} as const;
 export const VOTING_DURATION_SECONDS = 20;
 export const MAX_NO_VOTE_REOPEN = 3;
 export const MAX_HALF_MOVES = 120;
@@ -20,3 +34,14 @@ export const PIECE_PRICES: Record<string, string> = {
   ROOK: '0.0005',
   QUEEN: '0.0010',
 };
+
+export const PIECE_PRICE_WEI: Record<string, string> = {
+  PAWN: '100000000000000',
+  KING: '200000000000000',
+  KNIGHT: '300000000000000',
+  BISHOP: '300000000000000',
+  ROOK: '500000000000000',
+  QUEEN: '1000000000000000',
+};
+
+export const PIECE_PRIORITY = ['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT', 'KING', 'PAWN'] as const;
