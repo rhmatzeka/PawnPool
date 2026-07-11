@@ -122,6 +122,7 @@ Mode ini tidak membutuhkan Railway/Render/Koyeb. Next.js API routes menggantikan
 ```text
 DATABASE_URL=postgresql://...
 NEXT_PUBLIC_MOCK_CHAIN=true
+NEXT_PUBLIC_ENABLE_ONCHAIN_BETS=false
 ```
 3. Install command:
 ```bash
@@ -133,7 +134,7 @@ pnpm --filter web build
 ```
 5. Redeploy dari branch `main`.
 
-Catatan: mode Vercel-only memakai polling setiap 2 detik, bukan Socket.IO. Timer 0 memanggil `/api/games/:gameId/resolve-expired-turn` pada domain Vercel yang sama.
+Catatan: mode Vercel-only memakai polling setiap 2 detik, bukan Socket.IO. Timer 0 memanggil `/api/games/:gameId/resolve-expired-turn` pada domain Vercel yang sama. Build web menjalankan `prisma db push` untuk membuat tabel demo di database yang ditunjuk `DATABASE_URL`.
 
 ---
 

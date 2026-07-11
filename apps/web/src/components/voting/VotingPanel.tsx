@@ -19,7 +19,7 @@ const PIECE_NAMES: Record<PieceType, string> = {
 };
 
 const API_URL = '/api';
-const MOCK_CHAIN = process.env.NEXT_PUBLIC_MOCK_CHAIN === 'true';
+const MOCK_CHAIN = process.env.NEXT_PUBLIC_ENABLE_ONCHAIN_BETS !== 'true';
 
 export const VotingPanel: React.FC = () => {
   const {

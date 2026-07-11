@@ -19,6 +19,7 @@ Minimal untuk Vercel-only demo:
 ```text
 DATABASE_URL=postgresql://...
 NEXT_PUBLIC_MOCK_CHAIN=true
+NEXT_PUBLIC_ENABLE_ONCHAIN_BETS=false
 ```
 
 Gunakan Neon Free untuk PostgreSQL jika tidak punya database sendiri.
@@ -48,4 +49,4 @@ API route tersedia di domain Vercel yang sama:
 /api/games/:gameId/resolve-expired-turn
 ```
 
-Karena mode ini memakai polling, `NEXT_PUBLIC_API_URL` dan `NEXT_PUBLIC_SOCKET_URL` tidak diperlukan untuk demo Vercel-only.
+Karena mode ini memakai polling, `NEXT_PUBLIC_API_URL` dan `NEXT_PUBLIC_SOCKET_URL` tidak diperlukan untuk demo Vercel-only. Build menjalankan `prisma db push` untuk membuat tabel demo otomatis di database `DATABASE_URL`.

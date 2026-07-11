@@ -9,10 +9,11 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "(node_modules/.bin/prisma generate --schema prisma/schema.prisma || ../../node_modules/.bin/prisma generate --schema prisma/schema.prisma) && next build",
+    "build": "(node_modules/.bin/prisma generate --schema prisma/schema.prisma || ../../node_modules/.bin/prisma generate --schema prisma/schema.prisma) && (node_modules/.bin/prisma db push --schema prisma/schema.prisma --accept-data-loss || ../../node_modules/.bin/prisma db push --schema prisma/schema.prisma --accept-data-loss) && next build",
     "start": "next start",
     "lint": "eslint",
     "prisma:generate": "node_modules/.bin/prisma generate --schema prisma/schema.prisma || ../../node_modules/.bin/prisma generate --schema prisma/schema.prisma",
+    "prisma:push": "node_modules/.bin/prisma db push --schema prisma/schema.prisma || ../../node_modules/.bin/prisma db push --schema prisma/schema.prisma",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
