@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useArenaStore, TurnStatus } from '../stores/arena-store';
+import { PieceType, Team } from '../types/chess';
 
 const API_URL = '/api';
 
@@ -28,6 +29,22 @@ export const useArenaSocket = () => {
       blackPoolWei: game.blackPoolWei,
       votes: game.votes,
       legalPieces: game.legalPieces || [],
+      moveHistory: (game.moves || []).map((move: any) => {
+        const [team, type] = String(move.piece).split('_');
+        return {
+          id: move.id,
+          from: move.from,
+          to: move.to,
+          piece: {
+            team: team as Team,
+            type: type as PieceType,
+            id: `${move.piece}_${move.turnNumber}`,
+          },
+          san: move.san,
+          turnNumber: move.turnNumber,
+          createdAt: move.createdAt,
+        };
+      }),
     });
   };
 

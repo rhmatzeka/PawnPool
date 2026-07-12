@@ -141,6 +141,11 @@ export class VercelGameService {
       },
     });
 
+    const moves = await prisma.move.findMany({
+      where: { gameId },
+      orderBy: { turnNumber: 'asc' },
+    });
+
     const votes = ['PAWN', 'KNIGHT', 'BISHOP', 'ROOK', 'QUEEN', 'KING'].map((piece) => {
       const pieceBets = bets.filter((bet: { piece: string }) => bet.piece === piece);
       const firstBetAt = pieceBets.reduce((earliest: string | null, bet: { createdAt: Date }) => {
@@ -172,6 +177,15 @@ export class VercelGameService {
       blackPoolWei: game.blackPoolWei,
       votes,
       legalPieces,
+      moves: moves.map((move) => ({
+        id: move.id,
+        from: move.fromSquare,
+        to: move.toSquare,
+        piece: move.piece,
+        san: move.san,
+        turnNumber: move.turnNumber,
+        createdAt: move.createdAt.toISOString(),
+      })),
     });
   }
 

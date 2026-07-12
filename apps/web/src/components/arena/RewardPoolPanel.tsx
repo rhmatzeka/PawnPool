@@ -4,10 +4,14 @@ import React from 'react';
 import { useArenaStore } from '../../stores/arena-store';
 
 export const RewardPoolPanel: React.FC = () => {
-  const { whitePoolWei, blackPoolWei, rewardPoolWei } = useArenaStore();
+  const { whitePoolWei, blackPoolWei } = useArenaStore();
 
-  // Convert dummy/mock values
-  const totalPool = parseFloat(whitePoolWei) + parseFloat(blackPoolWei);
+  const formatEth = (wei: string) => {
+    const eth = Number(BigInt(wei)) / 1e18;
+    return `${eth.toFixed(4)} ETH`;
+  };
+
+  const totalPoolWei = (BigInt(whitePoolWei) + BigInt(blackPoolWei)).toString();
 
   return (
     <div className="w-full bg-[#2d241e] p-5 rounded-xl border border-[#b58863]/30 shadow-md">
@@ -16,7 +20,7 @@ export const RewardPoolPanel: React.FC = () => {
           Total Prize Pool
         </span>
         <h2 className="text-2xl font-extrabold font-mono text-[#eedcbf] mt-1">
-          {totalPool.toFixed(4)} ETH
+          {formatEth(totalPoolWei)}
         </h2>
       </div>
 
@@ -26,7 +30,7 @@ export const RewardPoolPanel: React.FC = () => {
             White Pool
           </span>
           <div className="font-mono text-sm font-bold text-white mt-1">
-            {whitePoolWei} ETH
+            {formatEth(whitePoolWei)}
           </div>
         </div>
 
@@ -35,7 +39,7 @@ export const RewardPoolPanel: React.FC = () => {
             Black Pool
           </span>
           <div className="font-mono text-sm font-bold text-neutral-400 mt-1">
-            {blackPoolWei} ETH
+            {formatEth(blackPoolWei)}
           </div>
         </div>
       </div>

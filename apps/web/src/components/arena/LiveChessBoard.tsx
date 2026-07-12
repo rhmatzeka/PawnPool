@@ -20,10 +20,10 @@ export const LiveChessBoard: React.FC = () => {
       if (!piece) return [];
 
       const { row, col } = squareToCoords(square);
-      const squareWidth = PLAYABLE_AREA.width / 8;
-      const squareHeight = PLAYABLE_AREA.height / 8;
-      const left = PLAYABLE_AREA.left + col * squareWidth;
-      const top = PLAYABLE_AREA.top + row * squareHeight;
+      const squareWidth = 100 / 8;
+      const squareHeight = 100 / 8;
+      const left = col * squareWidth;
+      const top = row * squareHeight;
 
       return (
         <div
@@ -47,14 +47,27 @@ export const LiveChessBoard: React.FC = () => {
   };
 
   return (
-    <div className="relative aspect-square w-full max-w-[min(700px,calc(100vh-150px))] overflow-hidden rounded-xl bg-[#2b1b12] shadow-2xl shadow-black/40 ring-4 ring-[#7a4c25]">
-      <img
-        src="/assets/chess/Board.png"
-        alt="Chess board"
-        draggable={false}
-        className="absolute inset-0 h-full w-full select-none [image-rendering:pixelated]"
-      />
-      {renderPieces()}
+    <div className="relative aspect-square w-full max-w-[min(680px,calc(100vh-150px))] overflow-hidden rounded-2xl bg-[#2b1b12] p-3 shadow-2xl shadow-black/40 ring-4 ring-[#7a4c25]">
+      <div className="absolute inset-3 overflow-hidden rounded-xl bg-[#8a5633]">
+        <img
+          src="/assets/chess/Board.png"
+          alt="Chess board"
+          draggable={false}
+          className="absolute select-none [image-rendering:pixelated]"
+          style={{
+            left: `-${(PLAYABLE_AREA.left / PLAYABLE_AREA.width) * 100}%`,
+            top: `-${(PLAYABLE_AREA.top / PLAYABLE_AREA.height) * 100}%`,
+            width: `${(100 / PLAYABLE_AREA.width) * 100}%`,
+            height: `${(100 / PLAYABLE_AREA.height) * 100}%`,
+          }}
+        />
+      </div>
+      <div className="pointer-events-none absolute inset-3 rounded-xl shadow-[inset_0_0_0_2px_rgba(255,230,180,0.08),inset_0_0_32px_rgba(0,0,0,0.28)]" />
+      <div className="absolute inset-3">
+        <div className="relative h-full w-full">
+        {renderPieces()}
+        </div>
+      </div>
     </div>
   );
 };
