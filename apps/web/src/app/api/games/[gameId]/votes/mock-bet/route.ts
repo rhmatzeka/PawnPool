@@ -25,7 +25,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ gam
     return NextResponse.json({ ok: true, data: bet, error: null });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    const status = ['GAME_NOT_ACTIVE', 'TURN_LOCKED', 'WRONG_TEAM_TURN', 'TEAM_ALREADY_LOCKED', 'ALREADY_BET_THIS_TURN'].includes(message) ? 400 : 500;
+    const status = ['GAME_NOT_ACTIVE', 'TURN_LOCKED', 'WRONG_TEAM_TURN', 'TEAM_ALREADY_LOCKED', 'ALREADY_BET_THIS_TURN', 'PIECE_HAS_NO_LEGAL_MOVE'].includes(message) ? 400 : 500;
     return NextResponse.json({ ok: false, data: null, error: { code: message, message } }, { status });
   }
 }

@@ -30,6 +30,7 @@ interface ArenaState {
   turnEndsAt: string | null;
   timeLeft: number;
   votes: VoteTally[];
+  legalPieces: string[];
   myLockedTeam: Team | null;
   moveHistory: Move[];
   spectatorCount: number;
@@ -63,6 +64,7 @@ export const useArenaStore = create<ArenaState>((set) => ({
     { piece: 'QUEEN', totalAmountWei: '0', bettorCount: 0 },
     { piece: 'KING', totalAmountWei: '0', bettorCount: 0 },
   ],
+  legalPieces: ['PAWN', 'KNIGHT'],
   myLockedTeam: null,
   moveHistory: [],
   spectatorCount: 1,

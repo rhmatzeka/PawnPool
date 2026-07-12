@@ -28,6 +28,7 @@ export const VotingPanel: React.FC = () => {
     currentTurn,
     turnStatus,
     votes,
+    legalPieces,
     setGameState,
     myLockedTeam,
   } = useArenaStore();
@@ -47,6 +48,11 @@ export const VotingPanel: React.FC = () => {
 
     // Hanya boleh vote untuk current turn team
     if (myLockedTeam !== currentTurn) return;
+
+    if (!legalPieces.includes(piece)) {
+      alert(`${PIECE_NAMES[piece]} cannot move in the current position. Choose a highlighted legal piece.`);
+      return;
+    }
 
     if (!MOCK_CHAIN && isConnected && address && chainId === CHAIN_ID) {
       // ON-CHAIN VOTE VIA WALLET
@@ -203,7 +209,8 @@ export const VotingPanel: React.FC = () => {
             const imgUrl = getAssetPath(piece, currentTurn);
             const isBusy = isPending || isConfirming || isVotingLoading;
             const isWrongChain = !MOCK_CHAIN && isConnected && chainId !== CHAIN_ID;
-            const isDisabled = !myLockedTeam || turnStatus !== 'OPEN' || isBusy || myLockedTeam !== currentTurn || isWrongChain || (!MOCK_CHAIN && !isConnected);
+            const hasLegalMove = legalPieces.includes(piece);
+            const isDisabled = !myLockedTeam || turnStatus !== 'OPEN' || isBusy || myLockedTeam !== currentTurn || !hasLegalMove || isWrongChain || (!MOCK_CHAIN && !isConnected);
 
             return (
               <button
@@ -229,7 +236,7 @@ export const VotingPanel: React.FC = () => {
                 <div className="w-full text-center">
                   <div className="text-xs font-bold text-[#eedcbf]">{name}</div>
                   <div className="text-[10px] text-[#b58863] font-semibold">
-                    {MOCK_CHAIN ? 'Demo vote' : isWrongChain ? 'Switch to Ethereum Sepolia' : isBusy ? 'Submitting...' : `${price} ETH`}
+                    {!hasLegalMove ? 'No legal move' : MOCK_CHAIN ? 'Demo vote' : isWrongChain ? 'Switch to Ethereum Sepolia' : isBusy ? 'Submitting...' : `${price} ETH`}
                   </div>
                 </div>
 

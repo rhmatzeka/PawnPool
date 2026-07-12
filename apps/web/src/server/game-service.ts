@@ -52,17 +52,7 @@ async function resolveBestMoveForPiece(fen: string, team: 'WHITE' | 'BLACK', win
   }
 
   if (legalMoves.length === 0) {
-    for (const piece of ['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT', 'KING', 'PAWN']) {
-      legalMoves = ChessStateService.getLegalMovesForPiece(fen, piece, team);
-      if (legalMoves.length > 0) {
-        targetPiece = piece;
-        break;
-      }
-    }
-  }
-
-  if (legalMoves.length === 0) {
-    throw new Error('NO_LEGAL_MOVES_AVAILABLE');
+    throw new Error('NO_LEGAL_MOVES_FOR_VOTED_PIECES');
   }
 
   const bestMoveUci = await getBestMove(fen, legalMoves);
@@ -166,6 +156,8 @@ export class VercelGameService {
       };
     });
 
+    const legalPieces = this.getLegalPiecesForTurn(game.currentFen, game.currentTurn as 'WHITE' | 'BLACK');
+
     return jsonSafe({
       gameId: game.id,
       chainGameId: game.chainGameId,
@@ -179,7 +171,14 @@ export class VercelGameService {
       whitePoolWei: game.whitePoolWei,
       blackPoolWei: game.blackPoolWei,
       votes,
+      legalPieces,
     });
+  }
+
+  private static getLegalPiecesForTurn(fen: string, team: 'WHITE' | 'BLACK') {
+    return ['PAWN', 'KNIGHT', 'BISHOP', 'ROOK', 'QUEEN', 'KING'].filter((piece) => (
+      ChessStateService.getLegalMovesForPiece(fen, piece, team).length > 0
+    ));
   }
 
   private static async resolveExpiredTurnIfNeeded(gameId: string) {
@@ -211,6 +210,9 @@ export class VercelGameService {
     if (!game || game.status !== 'ACTIVE') throw new Error('GAME_NOT_ACTIVE');
     if (game.turnStatus !== 'OPEN') throw new Error('TURN_LOCKED');
     if (team !== game.currentTurn) throw new Error('WRONG_TEAM_TURN');
+    if (!this.getLegalPiecesForTurn(game.currentFen, game.currentTurn as 'WHITE' | 'BLACK').includes(piece)) {
+      throw new Error('PIECE_HAS_NO_LEGAL_MOVE');
+    }
 
     const existingLock = await prisma.playerGameState.findUnique({
       where: { gameId_address: { gameId, address } },

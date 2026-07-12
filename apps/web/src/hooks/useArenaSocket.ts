@@ -27,6 +27,7 @@ export const useArenaSocket = () => {
       whitePoolWei: game.whitePoolWei,
       blackPoolWei: game.blackPoolWei,
       votes: game.votes,
+      legalPieces: game.legalPieces || [],
     });
   };
 
