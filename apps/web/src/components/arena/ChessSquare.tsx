@@ -19,7 +19,7 @@ export const ChessSquare: React.FC<ChessSquareProps> = ({
       className="relative flex aspect-square w-full items-center justify-center select-none transition-colors duration-200 cursor-default"
       onClick={onClick}
     >
-      <span className={`absolute bottom-0.5 right-1 select-none font-mono text-[8px] font-black opacity-35 ${isLight ? 'text-[#8a5f35]' : 'text-[#f3dfbf]'}`}>
+      <span className={`absolute bottom-0.5 right-1 select-none font-mono text-[8px] font-black opacity-25 ${isLight ? 'text-[#8a5f35]' : 'text-[#f3dfbf]'}`}>
         {square}
       </span>
       {children}
