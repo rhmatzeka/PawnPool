@@ -8,13 +8,13 @@ export const GameStatusPanel: React.FC = () => {
   const statusLabel = status === 'ACTIVE' ? `Active (Turn ${turnNumber})` : result || status;
 
   return (
-    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md flex flex-wrap justify-between items-center gap-2 text-sm md:p-3.5">
+    <div className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-wrap justify-between items-center gap-2 text-xs">
       <div className="flex items-center gap-3">
         <div className="flex flex-col">
           <span className="text-[10px] text-[#eedcbf]/60 uppercase font-bold tracking-wider leading-none">
             Game Status
           </span>
-          <span className="font-bold text-[#eedcbf] leading-tight">
+          <span className="font-bold text-[#eedcbf] leading-tight text-sm">
             {statusLabel}
           </span>
         </div>
@@ -38,7 +38,7 @@ export const GameStatusPanel: React.FC = () => {
           <span className="text-[10px] text-[#eedcbf]/60 uppercase font-bold tracking-wider leading-none">
             Spectators
           </span>
-          <span className="font-mono text-sm font-bold text-[#eedcbf]">
+          <span className="font-mono text-xs font-bold text-[#eedcbf] md:text-sm">
             {spectatorCount} Watching
           </span>
         </div>
