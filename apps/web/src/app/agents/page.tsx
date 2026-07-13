@@ -96,8 +96,26 @@ export default function AgentsPage() {
               <p className="mt-4 font-mono text-[10px] text-[#f3dfbf]/35">{agent.id}</p>
             </article>
           ))}
-          {address && !loading && agents.length === 0 && <div className="rounded-xl border border-[#b58863]/20 bg-[#211713] p-5 text-sm text-[#f3dfbf]/60">No agents yet. Create your first strategy agent.</div>}
+          {address && !loading && agents.length === 0 && (
+            <div className="rounded-xl border border-[#b58863]/20 bg-[#211713] p-5 text-sm text-[#f3dfbf]/60">
+              <h2 className="text-xl font-black text-[#f3dfbf]">No agents yet</h2>
+              <p className="mt-2">Create your first AI chess agent to get turn-by-turn strategy recommendations in live arenas.</p>
+              <Link href="/agents/create" className="mt-4 inline-flex rounded-xl bg-[#d6a15f] px-4 py-2.5 font-black text-[#120d0a]">Create Agent</Link>
+            </div>
+          )}
         </div>
+
+        <section className="mt-8 rounded-2xl border border-[#b58863]/20 bg-[#211713] p-5">
+          <h2 className="text-xl font-black">How Agents Work</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            {['Create an agent', 'Pick personality', 'Use it in arena', 'Track leaderboard'].map((step, index) => (
+              <div key={step} className="rounded-xl bg-[#120d0a] p-4 text-sm text-[#f3dfbf]/65">
+                <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#b58863] font-black text-[#120d0a]">{index + 1}</span>
+                <p>{step}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   );

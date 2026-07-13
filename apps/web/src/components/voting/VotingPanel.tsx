@@ -293,7 +293,10 @@ export const VotingPanel: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="text-xs text-[#eedcbf]/45">No connected wallet agent found yet.</p>
+            <div className="rounded-lg bg-[#120d0a] p-3 text-xs text-[#eedcbf]/55">
+              {!address ? 'Connect a wallet to load your agents.' : "You don't have an agent yet. Create one to get turn-by-turn strategy recommendations."}
+              <a href="/agents/create" className="ml-2 font-black text-[#d6a15f] hover:underline">Create Agent</a>
+            </div>
           )}
 
           {agentDecision && (
@@ -302,6 +305,7 @@ export const VotingPanel: React.FC = () => {
                 <span>Agent pick: <strong className="text-[#d6a15f]">{agentDecision.recommendedPiece}</strong></span>
                 <span>{agentDecision.confidence}% confidence</span>
               </div>
+              <p className="mt-1 text-[10px] uppercase tracking-wider text-[#eedcbf]/35">Local scorer by default. Grok reasoning when xAI env is configured.</p>
               {agentDecision.reasoning && <p className="mt-2 text-[#eedcbf]/50">{agentDecision.reasoning}</p>}
               <button type="button" onClick={() => handleVote(agentDecision.recommendedPiece)} className="mt-3 rounded-lg bg-[#d6a15f] px-3 py-2 text-xs font-black text-[#120d0a]">
                 Back Agent Pick

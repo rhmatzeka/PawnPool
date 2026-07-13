@@ -21,6 +21,9 @@ export default function Home() {
             <Link href="/host" className="rounded-xl border border-[#d6a15f]/40 px-6 py-3 text-center font-bold text-[#f3dfbf] transition hover:bg-[#d6a15f]/10">
               Host a Match
             </Link>
+            <Link href="/agents/create" className="rounded-xl border border-[#d6a15f]/40 px-6 py-3 text-center font-bold text-[#f3dfbf] transition hover:bg-[#d6a15f]/10">
+              Create Your Agent
+            </Link>
             <Link href="/matches" className="rounded-xl border border-[#f3dfbf]/15 px-6 py-3 text-center font-bold text-[#f3dfbf]/80 transition hover:bg-[#f3dfbf]/5">
               Browse Matches
             </Link>
@@ -57,6 +60,21 @@ export default function Home() {
             <p className="mt-3 text-sm leading-6 text-[#f3dfbf]/65">
               Schedule creator battles, community-vs-community matches, and sponsored prize pool events with transparent move history and reward accounting.
             </p>
+          </div>
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-[#b58863]/20 bg-[#211713] p-6">
+          <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#b58863]">Player-Owned AI</p>
+              <h2 className="mt-2 text-2xl font-black">Build Your Chess Agent</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#f3dfbf]/65">
+                Create a personal AI strategy agent that recommends what piece to back during live chess arenas. Start with aggressive, balanced, or defensive playstyles.
+              </p>
+            </div>
+            <Link href="/agents/create" className="rounded-xl bg-[#d6a15f] px-5 py-3 text-center font-black text-[#120d0a]">
+              Create Agent
+            </Link>
           </div>
         </div>
 

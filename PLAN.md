@@ -708,6 +708,32 @@ Do not move to auto-vote or paid agents until these are true:
 - No major abuse/spam issue appears in test events.
 - Users understand agent decisions from reasoning text.
 
+## Agent Discoverability Plan
+
+Problem:
+
+```text
+Agent APIs and pages exist, but normal users may not discover that they can create and use their own AI agent.
+```
+
+Required UX entry points:
+
+- Landing page hero CTA: `Create Your Agent`.
+- Landing page section: `Build Your Chess Agent`.
+- Arena match card link: `My Agents`.
+- Voting panel empty state: `Create your first agent`.
+- Match lobby CTA: `Bring your agent into any arena`.
+- Agents page onboarding and empty state.
+- Agent create page templates and preview.
+
+Acceptance criteria:
+
+- User can discover agent creation from landing page within 5 seconds.
+- User can discover agent creation from arena without opening docs.
+- User without an agent sees an actionable CTA, not a dead empty state.
+- User creating an agent can choose a template instead of writing strategy from scratch.
+- User can understand recommendation-only vs demo auto-vote.
+
 ## Current State
 
 The project already has the technical foundation:

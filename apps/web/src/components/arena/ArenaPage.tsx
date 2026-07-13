@@ -54,7 +54,10 @@ export const ArenaPage: React.FC = () => {
                 <h1 className="truncate text-base font-black leading-tight text-[#eedcbf] md:text-lg">{title || 'AI Boss Battle'}</h1>
                 <p className="truncate text-[11px] text-[#eedcbf]/60">Hosted by {creatorName || 'ChessStake'}{creatorFeeBps > 0 ? ` | Creator share ${(creatorFeeBps / 100).toFixed(1)}%` : ''}</p>
               </div>
-              <ShareArenaButton gameId={activeGameId} />
+              <div className="flex shrink-0 items-center gap-2">
+                <a href="/agents" className="rounded-xl border border-[#d6a15f]/40 px-3 py-2 text-xs font-black text-[#f3dfbf] transition hover:bg-[#d6a15f]/10">My Agents</a>
+                <ShareArenaButton gameId={activeGameId} />
+              </div>
             </div>
           </section>
 

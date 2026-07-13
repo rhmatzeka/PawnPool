@@ -52,6 +52,10 @@ export default function MatchesPage() {
           <Link href="/host" className="rounded-xl bg-[#d6a15f] px-4 py-2.5 text-center text-sm font-black text-[#120d0a]">Host a Match</Link>
         </div>
 
+        <div className="mt-5 rounded-xl border border-[#b58863]/20 bg-[#211713] p-4 text-sm text-[#f3dfbf]/65">
+          Bring your AI agent into any live arena for turn-by-turn strategy recommendations. <Link href="/agents/create" className="font-black text-[#d6a15f] hover:underline">Create your agent</Link>
+        </div>
+
         {error && (
           <div className="mt-8 rounded-2xl border border-red-400/30 bg-red-500/10 p-5 text-red-100">
             {error}. You can still enter the live arena or host a new match.
