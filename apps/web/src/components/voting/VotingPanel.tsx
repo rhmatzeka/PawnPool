@@ -43,7 +43,7 @@ export const VotingPanel: React.FC = () => {
   const { placeBet, isPending, isConfirming } = usePlaceBet();
   const [isVotingLoading, setIsVotingLoading] = useState(false);
   const [myPickedPiece, setMyPickedPiece] = useState<PieceType | null>(null);
-  const [agents, setAgents] = useState<Array<{ id: string; name: string; riskLevel: string }>>([]);
+  const [agents, setAgents] = useState<Array<{ id: string; name: string; riskLevel: string; autoVoteEnabled?: boolean }>>([]);
   const [selectedAgentId, setSelectedAgentId] = useState('');
   const [agentDecision, setAgentDecision] = useState<{ recommendedPiece: PieceType; confidence: number; reasoning?: string } | null>(null);
   const [isAgentLoading, setIsAgentLoading] = useState(false);
@@ -166,6 +166,26 @@ export const VotingPanel: React.FC = () => {
     }
   };
 
+  const submitAgentAutoVote = async () => {
+    if (!activeGameId || !selectedAgentId || !address) return;
+    setIsAgentLoading(true);
+    try {
+      const res = await fetch(`/api/agents/${selectedAgentId}/auto-vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameId: activeGameId, address }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json.error?.message || 'Auto-vote failed');
+      setAgentDecision(json.data.decision);
+      setMyPickedPiece(json.data.decision.recommendedPiece);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Auto-vote failed');
+    } finally {
+      setIsAgentLoading(false);
+    }
+  };
+
   const getAssetPath = (piece: PieceType, team: Team) => {
     const formattedPiece = piece[0] + piece.slice(1).toLowerCase();
     const formattedTeam = team[0] + team.slice(1).toLowerCase();
@@ -263,9 +283,14 @@ export const VotingPanel: React.FC = () => {
               <select value={selectedAgentId} onChange={(event) => setSelectedAgentId(event.target.value)} className="rounded-lg border border-[#b58863]/20 bg-[#120d0a] px-3 py-2 text-xs text-[#eedcbf] outline-none">
                 {agents.map((agent) => <option key={agent.id} value={agent.id}>{agent.name} ({agent.riskLevel})</option>)}
               </select>
-              <button type="button" onClick={requestAgentRecommendation} disabled={isAgentLoading || !activeGameId} className="rounded-lg border border-[#d6a15f]/40 px-3 py-2 text-xs font-black text-[#d6a15f] disabled:opacity-40">
-                {isAgentLoading ? 'Thinking...' : 'Recommend'}
-              </button>
+              <div className="flex gap-2">
+                <button type="button" onClick={requestAgentRecommendation} disabled={isAgentLoading || !activeGameId} className="rounded-lg border border-[#d6a15f]/40 px-3 py-2 text-xs font-black text-[#d6a15f] disabled:opacity-40">
+                  {isAgentLoading ? 'Thinking...' : 'Recommend'}
+                </button>
+                <button type="button" onClick={submitAgentAutoVote} disabled={isAgentLoading || !activeGameId || !agents.find((agent) => agent.id === selectedAgentId)?.autoVoteEnabled} className="rounded-lg bg-[#d6a15f] px-3 py-2 text-xs font-black text-[#120d0a] disabled:opacity-40">
+                  Auto Demo
+                </button>
+              </div>
             </div>
           ) : (
             <p className="text-xs text-[#eedcbf]/45">No connected wallet agent found yet.</p>

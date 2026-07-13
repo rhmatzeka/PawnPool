@@ -13,6 +13,31 @@ function jsonSafe<T>(data: T): T {
   return JSON.parse(JSON.stringify(data, (_key, value) => (typeof value === 'bigint' ? value.toString() : value)));
 }
 
+async function getXaiReasoning(input: { agentName: string; personality: string; piece: string; confidence: number; fen: string }) {
+  if (!process.env.XAI_API_KEY || process.env.AI_PROVIDER !== 'xai') return null;
+
+  const res = await fetch('https://api.x.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: process.env.XAI_MODEL || 'grok-3-mini',
+      messages: [
+        { role: 'system', content: 'Explain a chess agent recommendation in one short sentence. Do not invent illegal moves.' },
+        { role: 'user', content: `Agent ${input.agentName} has personality: ${input.personality}. Current FEN: ${input.fen}. It recommends ${input.piece} with ${input.confidence}% confidence. Explain why briefly.` },
+      ],
+      temperature: 0.4,
+      max_tokens: 80,
+    }),
+  });
+
+  if (!res.ok) return null;
+  const json = await res.json();
+  return String(json.choices?.[0]?.message?.content || '').trim() || null;
+}
+
 async function getBestMove(fen: string, legalMoves: string[]) {
   if (legalMoves.length === 0) {
     throw new Error('NO_LEGAL_MOVES');
@@ -482,7 +507,9 @@ export class VercelGameService {
     const best = scores[0];
     const recommendedMove = best.legalMoves[0] || null;
     const confidence = Math.max(35, Math.min(95, 50 + best.total));
-    const reasoning = `${agent.name} prefers ${best.piece} because it has ${best.legalMoves.length} legal move${best.legalMoves.length === 1 ? '' : 's'} with a local strategy score of ${best.total}.`;
+    const localReasoning = `${agent.name} prefers ${best.piece} because it has ${best.legalMoves.length} legal move${best.legalMoves.length === 1 ? '' : 's'} with a local strategy score of ${best.total}.`;
+    const xaiReasoning = await getXaiReasoning({ agentName: agent.name, personality: agent.personality, piece: best.piece, confidence, fen: game.currentFen }).catch(() => null);
+    const reasoning = xaiReasoning || localReasoning;
 
     const decision = await prisma.agentDecision.create({
       data: {
@@ -496,10 +523,43 @@ export class VercelGameService {
         confidence,
         reasoning,
         scoringBreakdown: scores.map(({ piece, captureScore, mobilityScore, piecePreference, riskBonus, total }) => ({ piece, captureScore, mobilityScore, piecePreference, riskBonus, total })),
+        provider: xaiReasoning ? 'xai' : 'local',
+        fallbackUsed: !xaiReasoning,
       },
     });
 
     return jsonSafe(decision);
+  }
+
+  public static async autoVoteWithAgent(agentId: string, gameId: string, address: string) {
+    const agent = await prisma.playerAgent.findUnique({ where: { id: agentId } });
+    if (!agent) throw new Error('AGENT_NOT_FOUND');
+    if (agent.ownerAddress !== address.toLowerCase()) throw new Error('AGENT_OWNER_MISMATCH');
+    if (!agent.autoVoteEnabled) throw new Error('AUTO_VOTE_DISABLED');
+    if (process.env.NEXT_PUBLIC_ENABLE_ONCHAIN_BETS === 'true') throw new Error('AUTO_VOTE_MAINNET_DISABLED');
+
+    const decision = await this.recommendWithAgent(agentId, gameId);
+    const game = await prisma.game.findUnique({ where: { id: gameId } });
+    if (!game) throw new Error('GAME_NOT_FOUND');
+
+    const bet = await this.placeBetMock(gameId, address, game.currentTurn as 'WHITE' | 'BLACK', decision.recommendedPiece, agent.maxVoteWei || '100000000000000');
+    await prisma.agentDecision.update({ where: { id: decision.id }, data: { wasSubmitted: true } });
+    return jsonSafe({ decision, bet });
+  }
+
+  public static async getAgentLeaderboard() {
+    const decisions = await prisma.agentDecision.findMany({ include: { agent: true }, orderBy: { createdAt: 'desc' }, take: 1000 });
+    const byAgent = new Map<string, { agentId: string; name: string; ownerAddress: string; recommendations: number; submitted: number; avgConfidence: number }>();
+
+    for (const decision of decisions) {
+      const current = byAgent.get(decision.agentId) || { agentId: decision.agentId, name: decision.agent.name, ownerAddress: decision.agent.ownerAddress, recommendations: 0, submitted: 0, avgConfidence: 0 };
+      current.avgConfidence = ((current.avgConfidence * current.recommendations) + decision.confidence) / (current.recommendations + 1);
+      current.recommendations += 1;
+      if (decision.wasSubmitted) current.submitted += 1;
+      byAgent.set(decision.agentId, current);
+    }
+
+    return jsonSafe([...byAgent.values()].sort((a, b) => b.submitted - a.submitted || b.recommendations - a.recommendations).slice(0, 20));
   }
 
   public static async heartbeatSpectator(gameId: string, sessionId: string) {

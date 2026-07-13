@@ -176,6 +176,8 @@ model PlayerAgent {
   isPublic        Boolean  @default(false)
   autoVoteEnabled Boolean  @default(false)
   maxVoteWei      String?
+  planTier        String   @default("FREE")
+  leagueEnabled   Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   decisions       AgentDecision[]
