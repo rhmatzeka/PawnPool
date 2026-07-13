@@ -39,7 +39,7 @@ export default function ShareArenaButton({ gameId, label = 'Share Arena' }: Shar
     <button
       type="button"
       onClick={handleShare}
-      className="rounded-xl border border-[#d6a15f]/40 px-4 py-2 text-sm font-black text-[#f3dfbf] transition hover:bg-[#d6a15f]/10"
+      className="rounded-xl border border-[#d6a15f]/40 px-3 py-2 text-xs font-black text-[#f3dfbf] transition hover:bg-[#d6a15f]/10 md:px-4 md:text-sm"
     >
       {copied ? 'Copied Link' : label}
     </button>

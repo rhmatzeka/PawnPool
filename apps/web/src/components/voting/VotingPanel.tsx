@@ -155,10 +155,10 @@ export const VotingPanel: React.FC = () => {
   }, [activeGameId, setGameState]);
 
   return (
-    <div className="w-full bg-[#2d241e] p-6 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-5">
+    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-3 md:p-4">
       {/* Team Selection Section */}
-      <div className="border-b border-[#b58863]/20 pb-4">
-        <h3 className="text-sm font-bold text-[#eedcbf] uppercase tracking-wider mb-2">
+      <div className="border-b border-[#b58863]/20 pb-3">
+        <h3 className="text-xs font-bold text-[#eedcbf] uppercase tracking-wider mb-2">
           Select Your Team
         </h3>
         
@@ -166,19 +166,19 @@ export const VotingPanel: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSelectTeam('WHITE')}
-              className="py-2.5 px-4 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
+              className="py-2 px-3 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
             >
               WHITE Team
             </button>
             <button
               onClick={() => handleSelectTeam('BLACK')}
-              className="py-2.5 px-4 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
+              className="py-2 px-3 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
             >
               BLACK Team
             </button>
           </div>
         ) : (
-          <div className="flex justify-between items-center bg-[#1e1713] px-4 py-2.5 rounded-lg border border-[#b58863]/20">
+          <div className="flex justify-between items-center bg-[#1e1713] px-3 py-2 rounded-lg border border-[#b58863]/20">
             <span className="text-xs text-[#eedcbf]/60 font-semibold">Joined Team:</span>
             <span className={`font-extrabold text-sm px-3 py-1 rounded ${
               myLockedTeam === 'WHITE' 
@@ -194,8 +194,8 @@ export const VotingPanel: React.FC = () => {
       <div>
         <div className="mb-4">
           <div className="mb-1 flex items-center justify-between gap-3">
-            <h3 className="text-sm font-bold text-[#eedcbf] uppercase tracking-wider">
-              Place Your Bet
+            <h3 className="text-xs font-bold text-[#eedcbf] uppercase tracking-wider">
+              Back This Turn
             </h3>
           </div>
           <p className="text-xs text-[#eedcbf]/60">
@@ -207,7 +207,7 @@ export const VotingPanel: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {(Object.keys(PIECE_PRICES) as PieceType[]).map((piece) => {
             const price = PIECE_PRICES[piece];
             const name = PIECE_NAMES[piece];
@@ -231,13 +231,13 @@ export const VotingPanel: React.FC = () => {
                   isDisabled 
                     ? 'opacity-30 cursor-not-allowed border-[#b58863]/10'
                     : 'hover:bg-[#251d18] border-[#b58863]/30 hover:border-[#b58863]/60 cursor-pointer active:scale-95'
-                  }`}
+                } p-2`}
               >
                 <div className="absolute left-2 top-2 flex gap-1">
                   {isLeading && <span className="rounded bg-[#d6a15f] px-1.5 py-0.5 text-[9px] font-black uppercase text-[#1e1713]">Leading</span>}
                   {isMyPick && <span className="rounded border border-[#d6a15f]/40 px-1.5 py-0.5 text-[9px] font-black uppercase text-[#d6a15f]">Your Pick</span>}
                 </div>
-                <div className="relative w-12 h-12 mb-2 select-none pointer-events-none">
+                <div className="relative w-9 h-9 mb-1.5 select-none pointer-events-none md:h-11 md:w-11">
                   <Image
                     src={imgUrl}
                     alt={name}
@@ -248,13 +248,13 @@ export const VotingPanel: React.FC = () => {
                 </div>
 
                 <div className="w-full text-center">
-                  <div className="text-xs font-bold text-[#eedcbf]">{name}</div>
+                  <div className="text-[11px] font-bold text-[#eedcbf] md:text-xs">{name}</div>
                   <div className="text-[10px] text-[#b58863] font-semibold">
                     {!hasLegalMove ? 'No legal move' : isWrongChain ? 'Switch to Ethereum Sepolia' : isBusy ? 'Submitting...' : `${price} ETH`}
                   </div>
                 </div>
 
-                <div className="w-full border-t border-[#b58863]/10 mt-2 pt-1 flex justify-between text-[9px] text-[#eedcbf]/50 font-mono">
+                <div className="w-full border-t border-[#b58863]/10 mt-1.5 pt-1 flex justify-between text-[8px] text-[#eedcbf]/50 font-mono md:text-[9px]">
                   <span>{formatEthFromWei(voteData.totalAmountWei)}</span>
                   <span>{voteData.bettorCount} backers</span>
                 </div>

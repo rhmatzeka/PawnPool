@@ -113,7 +113,7 @@ export const VotingTimer: React.FC = () => {
   const isLowTime = timeLeft <= 5;
 
   return (
-    <div className="w-full bg-[#2d241e] p-4 rounded-xl border border-[#b58863]/30 shadow-md">
+    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md">
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs uppercase tracking-wider font-semibold text-[#eedcbf]/60">
           Turn Status: <span className="text-[#eedcbf]">{turnStatus}</span>
@@ -124,7 +124,7 @@ export const VotingTimer: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex-1 bg-[#1e1713] h-3 rounded-full overflow-hidden p-0.5 border border-[#b58863]/10">
+        <div className="flex-1 bg-[#1e1713] h-2.5 rounded-full overflow-hidden p-0.5 border border-[#b58863]/10">
           <div 
             className={`h-full rounded-full transition-all duration-1000 ${
               isLowTime ? 'bg-red-500 animate-pulse' : 'bg-[#b58863]'
@@ -132,7 +132,7 @@ export const VotingTimer: React.FC = () => {
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <span className={`text-lg font-mono font-bold leading-none w-8 text-right ${isLowTime ? 'text-red-500' : 'text-[#eedcbf]'}`}>
+        <span className={`text-base font-mono font-bold leading-none w-8 text-right ${isLowTime ? 'text-red-500' : 'text-[#eedcbf]'}`}>
           {timeLeft}s
         </span>
       </div>
