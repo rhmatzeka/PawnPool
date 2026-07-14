@@ -1,6 +1,6 @@
 # ChessStake - Web3 AI Chess Betting Arena
 
-ChessStake adalah arena permainan catur Web3 berbasis kecerdasan buatan (AI) di mana penonton dapat connect wallet, memilih tim White/Black, dan memasang taruhan/vote untuk menentukan jenis bidak yang akan digerakkan. Untuk demo Vercel-only, vote berjalan dalam mock mode dan AI resolve dilakukan lewat Next.js API routes
+ChessStake adalah arena permainan catur Web3 berbasis kecerdasan buatan (AI) di mana penonton dapat connect wallet, memilih tim White/Black, dan memasang taruhan/vote untuk menentukan jenis bidak yang akan digerakkan. Untuk demo Vercel-only, vote berjalan dalam mock mode dan AI resolve dilakukan lewat Next.js API routes.
 
 ---
 
