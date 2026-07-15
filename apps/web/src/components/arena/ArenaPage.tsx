@@ -66,13 +66,13 @@ export const ArenaPage: React.FC = () => {
           <MoveHistoryPanel />
         </div>
 
-        {/* Right Column: Betting + Timer (5 cols on lg) */}
-        <div className="lg:col-span-5 flex flex-col gap-3 w-full">
-          <VotingTimer />
-          
-          <RewardPoolPanel />
-
+        {/* Right Column: Player action panel first, supporting context below */}
+        <div className="lg:col-span-5 flex flex-col gap-3 w-full lg:sticky lg:top-4">
           <VotingPanel />
+
+          <VotingTimer />
+
+          <RewardPoolPanel />
         </div>
       </main>
       

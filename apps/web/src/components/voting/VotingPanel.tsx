@@ -217,10 +217,10 @@ export const VotingPanel: React.FC = () => {
   }, [loadAgents]);
 
   return (
-    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-3 md:p-4">
+    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-3 md:p-3.5">
       {/* Team Selection Section */}
       <div className="border-b border-[#b58863]/20 pb-3">
-        <h3 className="text-xs font-bold text-[#eedcbf] uppercase tracking-wider mb-2">
+        <h3 className="text-[11px] font-bold text-[#eedcbf] uppercase tracking-wider mb-2">
           Select Your Team
         </h3>
         
@@ -228,13 +228,13 @@ export const VotingPanel: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSelectTeam('WHITE')}
-              className="py-2 px-3 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
+              className="py-1.5 px-3 rounded-lg text-sm font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
             >
               WHITE Team
             </button>
             <button
               onClick={() => handleSelectTeam('BLACK')}
-              className="py-2 px-3 rounded-lg font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
+              className="py-1.5 px-3 rounded-lg text-sm font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
             >
               BLACK Team
             </button>
@@ -269,11 +269,11 @@ export const VotingPanel: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-3 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-3">
+        <div className="mb-2 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-2.5">
           <div className="mb-2 flex items-center justify-between gap-3">
             <div>
               <h4 className="text-xs font-black uppercase tracking-wider text-[#eedcbf]">Use My Agent</h4>
-              <p className="text-[11px] text-[#eedcbf]/50">Recommendation only. You still confirm the vote.</p>
+              <p className="text-[10px] text-[#eedcbf]/50">Recommendation only. You still confirm.</p>
             </div>
             <a href="/agents/create" className="text-[11px] font-bold text-[#d6a15f] hover:underline">Create</a>
           </div>
@@ -293,14 +293,14 @@ export const VotingPanel: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-lg bg-[#120d0a] p-3 text-xs text-[#eedcbf]/55">
+            <div className="rounded-lg bg-[#120d0a] p-2.5 text-xs text-[#eedcbf]/55">
               {!address ? 'Connect a wallet to load your agents.' : "You don't have an agent yet. Create one to get turn-by-turn strategy recommendations."}
               <a href="/agents/create" className="ml-2 font-black text-[#d6a15f] hover:underline">Create Agent</a>
             </div>
           )}
 
           {agentDecision && (
-            <div className="mt-3 rounded-lg bg-[#120d0a] p-3 text-xs text-[#eedcbf]/70">
+            <div className="mt-2 rounded-lg bg-[#120d0a] p-2.5 text-xs text-[#eedcbf]/70">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span>Agent pick: <strong className="text-[#d6a15f]">{agentDecision.recommendedPiece}</strong></span>
                 <span>{agentDecision.confidence}% confidence</span>
@@ -314,7 +314,7 @@ export const VotingPanel: React.FC = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-1.5">
           {(Object.keys(PIECE_PRICES) as PieceType[]).map((piece) => {
             const price = PIECE_PRICES[piece];
             const name = PIECE_NAMES[piece];
@@ -344,7 +344,7 @@ export const VotingPanel: React.FC = () => {
                   {isLeading && <span className="rounded bg-[#d6a15f] px-1.5 py-0.5 text-[9px] font-black uppercase text-[#1e1713]">Leading</span>}
                   {isMyPick && <span className="rounded border border-[#d6a15f]/40 px-1.5 py-0.5 text-[9px] font-black uppercase text-[#d6a15f]">Your Pick</span>}
                 </div>
-                <div className="relative w-9 h-9 mb-1.5 select-none pointer-events-none md:h-11 md:w-11">
+                <div className="relative w-8 h-8 mb-1 select-none pointer-events-none md:h-10 md:w-10">
                   <Image
                     src={imgUrl}
                     alt={name}
