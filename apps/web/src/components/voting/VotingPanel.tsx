@@ -217,10 +217,10 @@ export const VotingPanel: React.FC = () => {
   }, [loadAgents]);
 
   return (
-    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-3 md:p-3.5">
+    <div className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-2.5">
       {/* Team Selection Section */}
-      <div className="border-b border-[#b58863]/20 pb-3">
-        <h3 className="text-[11px] font-bold text-[#eedcbf] uppercase tracking-wider mb-2">
+      <div className="border-b border-[#b58863]/20 pb-2.5">
+        <h3 className="text-[10px] font-bold text-[#eedcbf] uppercase tracking-wider mb-1.5">
           Select Your Team
         </h3>
         
@@ -228,19 +228,19 @@ export const VotingPanel: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => handleSelectTeam('WHITE')}
-              className="py-1.5 px-3 rounded-lg text-sm font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
+              className="py-1.5 px-3 rounded-lg text-xs font-bold text-center border transition-all duration-150 cursor-pointer text-[#1e1713] bg-[#eedcbf] border-[#eedcbf] hover:bg-[#eedcbf]/90 active:scale-95"
             >
               WHITE Team
             </button>
             <button
               onClick={() => handleSelectTeam('BLACK')}
-              className="py-1.5 px-3 rounded-lg text-sm font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
+              className="py-1.5 px-3 rounded-lg text-xs font-bold text-center border transition-all duration-150 cursor-pointer text-[#eedcbf] bg-[#1e1713] border-[#eedcbf]/30 hover:bg-[#1e1713]/80 active:scale-95"
             >
               BLACK Team
             </button>
           </div>
         ) : (
-          <div className="flex justify-between items-center bg-[#1e1713] px-3 py-2 rounded-lg border border-[#b58863]/20">
+          <div className="flex justify-between items-center bg-[#1e1713] px-3 py-1.5 rounded-lg border border-[#b58863]/20">
             <span className="text-xs text-[#eedcbf]/60 font-semibold">Joined Team:</span>
             <span className={`font-extrabold text-sm px-3 py-1 rounded ${
               myLockedTeam === 'WHITE' 
@@ -255,12 +255,12 @@ export const VotingPanel: React.FC = () => {
 
       <div>
         <div className="mb-4">
-          <div className="mb-1 flex items-center justify-between gap-3">
-            <h3 className="text-xs font-bold text-[#eedcbf] uppercase tracking-wider">
+          <div className="mb-0.5 flex items-center justify-between gap-3">
+            <h3 className="text-[11px] font-bold text-[#eedcbf] uppercase tracking-wider">
               Back This Turn
             </h3>
           </div>
-          <p className="text-xs text-[#eedcbf]/60">
+          <p className="text-[11px] text-[#eedcbf]/60">
             {!myLockedTeam 
               ? 'Select your team above to unlock betting.'
               : myLockedTeam !== currentTurn
@@ -269,11 +269,11 @@ export const VotingPanel: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-2 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-2.5">
-          <div className="mb-2 flex items-center justify-between gap-3">
+        <div className="mb-2 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-2">
+          <div className="mb-1.5 flex items-center justify-between gap-3">
             <div>
-              <h4 className="text-xs font-black uppercase tracking-wider text-[#eedcbf]">Use My Agent</h4>
-              <p className="text-[10px] text-[#eedcbf]/50">Recommendation only. You still confirm.</p>
+              <h4 className="text-[11px] font-black uppercase tracking-wider text-[#eedcbf]">Use My Agent</h4>
+              <p className="text-[9px] text-[#eedcbf]/50">Recommendation only. You confirm.</p>
             </div>
             <a href="/agents/create" className="text-[11px] font-bold text-[#d6a15f] hover:underline">Create</a>
           </div>
@@ -293,7 +293,7 @@ export const VotingPanel: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-lg bg-[#120d0a] p-2.5 text-xs text-[#eedcbf]/55">
+            <div className="rounded-lg bg-[#120d0a] p-2 text-[11px] leading-4 text-[#eedcbf]/55">
               {!address ? 'Connect a wallet to load your agents.' : "You don't have an agent yet. Create one to get turn-by-turn strategy recommendations."}
               <a href="/agents/create" className="ml-2 font-black text-[#d6a15f] hover:underline">Create Agent</a>
             </div>
@@ -338,13 +338,13 @@ export const VotingPanel: React.FC = () => {
                   isDisabled 
                     ? 'opacity-30 cursor-not-allowed border-[#b58863]/10'
                     : 'hover:bg-[#251d18] border-[#b58863]/30 hover:border-[#b58863]/60 cursor-pointer active:scale-95'
-                } p-2`}
+                } p-1.5`}
               >
                 <div className="absolute left-2 top-2 flex gap-1">
                   {isLeading && <span className="rounded bg-[#d6a15f] px-1.5 py-0.5 text-[9px] font-black uppercase text-[#1e1713]">Leading</span>}
                   {isMyPick && <span className="rounded border border-[#d6a15f]/40 px-1.5 py-0.5 text-[9px] font-black uppercase text-[#d6a15f]">Your Pick</span>}
                 </div>
-                <div className="relative w-8 h-8 mb-1 select-none pointer-events-none md:h-10 md:w-10">
+                <div className="relative w-7 h-7 mb-1 select-none pointer-events-none md:h-8 md:w-8">
                   <Image
                     src={imgUrl}
                     alt={name}
@@ -355,17 +355,17 @@ export const VotingPanel: React.FC = () => {
                 </div>
 
                 <div className="w-full text-center">
-                  <div className="text-[11px] font-bold text-[#eedcbf] md:text-xs">{name}</div>
-                  <div className="text-[10px] text-[#b58863] font-semibold">
+                  <div className="text-[10px] font-bold text-[#eedcbf]">{name}</div>
+                  <div className="text-[9px] text-[#b58863] font-semibold">
                     {!hasLegalMove ? 'No legal move' : isWrongChain ? 'Switch to Ethereum Sepolia' : isBusy ? 'Submitting...' : `${price} ETH`}
                   </div>
                 </div>
 
-                <div className="w-full border-t border-[#b58863]/10 mt-1.5 pt-1 flex justify-between text-[8px] text-[#eedcbf]/50 font-mono md:text-[9px]">
+                <div className="w-full border-t border-[#b58863]/10 mt-1 pt-1 flex justify-between text-[8px] text-[#eedcbf]/50 font-mono">
                   <span>{formatEthFromWei(voteData.totalAmountWei)}</span>
                   <span>{voteData.bettorCount} backers</span>
                 </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#120d0a]">
+                <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-[#120d0a]">
                   <div className="h-full bg-[#d6a15f]" style={{ width: `${progress}%` }} />
                 </div>
               </button>
