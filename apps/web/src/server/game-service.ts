@@ -17,20 +17,51 @@ function scoreMove(fen: string, move: string) {
   const chess = new Chess(fen);
   const from = move.slice(0, 2);
   const to = move.slice(2, 4);
-  const targetPiece = chess.get(to as any);
   const movingPiece = chess.get(from as any);
+  if (!movingPiece) return -Infinity;
+
+  let appliedMove;
+  try {
+    appliedMove = chess.move({ from, to, promotion: 'q' });
+  } catch {
+    return -Infinity;
+  }
+
   const values: Record<string, number> = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
   const file = to.charCodeAt(0) - 97;
   const rank = Number(to[1]);
+  const fromFile = from.charCodeAt(0) - 97;
+  const fromRank = Number(from[1]);
+  const fileDelta = Math.abs(file - fromFile);
+  const rankDelta = Math.abs(rank - fromRank);
   const centerDistance = Math.abs(file - 3.5) + Math.abs(rank - 4.5);
-  const centerScore = Math.max(0, 18 - centerDistance * 4);
-  const captureScore = targetPiece ? (values[targetPiece.type] || 0) * 10 : 0;
-  const developmentScore = movingPiece?.type === 'n' || movingPiece?.type === 'b' ? 8 : 0;
-  const pawnCenterBonus = movingPiece?.type === 'p' && ['c', 'd', 'e', 'f'].includes(to[0]) ? 14 : 0;
-  const pawnAdvanceBonus = movingPiece?.type === 'p' ? Math.max(0, movingPiece.color === 'w' ? rank - 2 : 7 - rank) * 2 : 0;
+  const centerScore = Math.max(0, 24 - centerDistance * 5);
+  const captureScore = appliedMove.captured ? (values[appliedMove.captured] || 0) * 12 : 0;
+  const checkScore = appliedMove.san.includes('+') || appliedMove.san.includes('#') ? 35 : 0;
+  const mateScore = appliedMove.san.includes('#') ? 10000 : 0;
+  const developmentScore = movingPiece.type === 'n' || movingPiece.type === 'b' ? 12 : 0;
+  const diagonalScore = fileDelta === rankDelta && fileDelta > 0 ? 16 : 0;
+  const lateralScore = rankDelta === 0 && fileDelta > 0 ? 10 : 0;
+  const backwardScore = movingPiece.type !== 'p' && ((movingPiece.color === 'w' && rank < fromRank) || (movingPiece.color === 'b' && rank > fromRank)) ? 8 : 0;
+  const longRangeScore = ['b', 'r', 'q'].includes(movingPiece.type) ? Math.min(18, (fileDelta + rankDelta) * 3) : 0;
+  const pawnCenterBonus = movingPiece.type === 'p' && ['c', 'd', 'e', 'f'].includes(to[0]) ? 18 : 0;
+  const pawnAdvanceBonus = movingPiece.type === 'p' ? Math.max(0, movingPiece.color === 'w' ? rank - 2 : 7 - rank) * 2 : 0;
   const edgePenalty = file === 0 || file === 7 ? -10 : 0;
+  const queenAimlessForwardPenalty = movingPiece.type === 'q' && fileDelta === 0 && !appliedMove.captured && !checkScore ? -28 : 0;
+  const kingWanderPenalty = movingPiece.type === 'k' && !appliedMove.captured && !checkScore ? -16 : 0;
+  const mobilityAfter = chess.moves().length;
+  const mobilityScore = Math.min(20, mobilityAfter);
 
-  return captureScore + centerScore + developmentScore + pawnCenterBonus + pawnAdvanceBonus + edgePenalty;
+  const board = chess.board();
+  const materialScore = board.flat().reduce((sum, piece) => {
+    if (!piece) return sum;
+    const value = values[piece.type] || 0;
+    return sum + (piece.color === movingPiece.color ? value : -value);
+  }, 0);
+
+  const deterministicNoise = ((from.charCodeAt(0) * 17 + fromRank * 31 + to.charCodeAt(0) * 13 + rank * 7) % 11) - 5;
+
+  return materialScore + captureScore + checkScore + mateScore + centerScore + developmentScore + diagonalScore + lateralScore + backwardScore + longRangeScore + pawnCenterBonus + pawnAdvanceBonus + mobilityScore + edgePenalty + queenAimlessForwardPenalty + kingWanderPenalty + deterministicNoise;
 }
 
 async function getXaiReasoning(input: { agentName: string; personality: string; piece: string; confidence: number; fen: string }) {
