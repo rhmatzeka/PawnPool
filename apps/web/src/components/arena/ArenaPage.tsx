@@ -47,6 +47,12 @@ export const ArenaPage: React.FC = () => {
             <AiThinkingPanel />
           </div>
 
+          <div className="flex w-full flex-col gap-2 lg:hidden">
+            <VotingPanel />
+            <VotingTimer />
+            <RewardPoolPanel />
+          </div>
+
           <section className="w-full rounded-xl border border-[#b58863]/25 bg-[#2d241e] p-2.5 shadow-md">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -67,7 +73,7 @@ export const ArenaPage: React.FC = () => {
         </div>
 
         {/* Right Column: Player action panel first, supporting context below */}
-        <div className="lg:col-span-5 flex flex-col gap-3 w-full lg:sticky lg:top-4">
+        <div className="hidden lg:col-span-5 lg:flex lg:flex-col gap-3 w-full lg:sticky lg:top-4">
           <VotingPanel />
 
           <VotingTimer />
