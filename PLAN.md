@@ -1212,6 +1212,17 @@ Manual QA checklist:
 - `/how-to-play` loads and explains common confusion.
 - Analytics calls do not break if API fails.
 
+## Guided Tutorial Edge Cases
+
+Handle these before shipping the guided overlay:
+
+- If a `data-tutorial` target is missing, show the tooltip centered without crashing.
+- Recalculate target rectangle on scroll and resize.
+- Auto-scroll to the target before measuring it.
+- On mobile, keep the tooltip fixed at the bottom so it does not hide the highlighted area.
+- On desktop, place the tooltip near the target but clamp it inside the viewport.
+- If the target is partially outside the viewport, still highlight the visible position after scrolling.
+
 ## Tutorial Success Metrics
 
 Track:
