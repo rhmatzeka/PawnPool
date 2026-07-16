@@ -948,6 +948,290 @@ chessstake_first_vote_done
 - Mobile user sees voting guidance without excessive scrolling.
 - Analytics events are emitted.
 
+## Improved Guided Tutorial Plan
+
+The first tutorial implementation is a basic modal. It is not enough because new players need to know exactly what to do in the actual UI.
+
+New tutorial goal:
+
+```text
+Teach the player what to look at, what to click, why something is disabled, and what happens next.
+```
+
+## Practical Tutorial Steps
+
+Replace generic slides with action-oriented steps:
+
+```text
+1. Look at the board
+The board shows the current position. You do not drag pieces manually.
+```
+
+```text
+2. Choose your team
+Click WHITE or BLACK. You can vote only when your team is moving.
+```
+
+```text
+3. Check whose turn it is
+If you joined BLACK but the turn is WHITE, wait for BLACK's turn.
+```
+
+```text
+4. Choose a piece
+Click a legal piece card. The highest-backed piece controls this turn.
+```
+
+```text
+5. Disabled cards are normal
+A card is disabled if that piece cannot legally move or it is not your team's turn.
+```
+
+```text
+6. Optional: use your agent
+Your AI agent recommends a piece. You still confirm before submitting.
+```
+
+```text
+7. Watch the timer
+When the timer hits 0, voting closes.
+```
+
+```text
+8. AI makes the move
+AI picks the best legal move for the winning piece.
+```
+
+```text
+9. Repeat each turn
+The next team gets a turn. Keep voting until the match ends.
+```
+
+## Tutorial Modes
+
+Support two tutorial modes:
+
+```text
+Quick Start
+```
+
+For users who just want to play. 5 short steps.
+
+```text
+Full Guide
+```
+
+For users who need detailed explanation. Opens `/how-to-play`.
+
+MVP behavior:
+
+- First-time modal shows Quick Start.
+- Modal has `Open Full Guide` link.
+- Arena has persistent `How to Play` button.
+
+## UI Target Attributes
+
+Add `data-tutorial` attributes so future guided highlights can target real components.
+
+Required targets:
+
+```text
+data-tutorial="board"
+data-tutorial="team-selector"
+data-tutorial="turn-status"
+data-tutorial="piece-grid"
+data-tutorial="agent-panel"
+data-tutorial="timer"
+data-tutorial="reward-pool"
+data-tutorial="move-history"
+```
+
+Files:
+
+```text
+apps/web/src/components/arena/LiveChessBoard.tsx
+apps/web/src/components/voting/VotingPanel.tsx
+apps/web/src/components/voting/VotingTimer.tsx
+apps/web/src/components/arena/RewardPoolPanel.tsx
+apps/web/src/components/arena/MoveHistoryPanel.tsx
+apps/web/src/components/arena/GameStatusPanel.tsx
+```
+
+## Context-Aware Tutorial Checklist
+
+The first-turn checklist should change based on user state.
+
+States:
+
+```text
+No team selected
+```
+
+Show:
+
+```text
+Start here: choose WHITE or BLACK.
+```
+
+```text
+Team selected, wrong turn
+```
+
+Show:
+
+```text
+You joined BLACK. It is WHITE's turn, so wait for BLACK's turn.
+```
+
+```text
+Team selected, correct turn
+```
+
+Show:
+
+```text
+Your team is moving. Pick one legal piece below.
+```
+
+```text
+Vote submitted
+```
+
+Show:
+
+```text
+Vote submitted. Wait for the timer and AI move.
+```
+
+## Common Confusion Answers
+
+The tutorial and `/how-to-play` page must answer these directly:
+
+```text
+Why can't I click a piece?
+```
+
+Because it is not your team's turn or that piece has no legal move.
+
+```text
+Do I drag the chess pieces?
+```
+
+No. You vote for a piece type. AI moves it.
+
+```text
+Why did AI choose that square?
+```
+
+AI chooses from legal moves for the winning piece using strategy scoring.
+
+```text
+What is an agent?
+```
+
+An optional helper that recommends what piece to back.
+
+```text
+Is this real ETH?
+```
+
+MVP may use demo accounting unless on-chain mode is enabled.
+
+```text
+Why am I waiting?
+```
+
+Your selected team is not currently moving.
+
+## Visual Examples
+
+The tutorial should eventually include small visual examples:
+
+- Example piece card enabled.
+- Example piece card disabled.
+- Example current turn label.
+- Example agent recommendation card.
+- Example timer reaching 0.
+
+MVP can use text first. Next iteration can add screenshots or mini cards.
+
+## Mobile-Specific Tutorial Behavior
+
+Mobile tutorial must account for vertical layout.
+
+Requirements:
+
+- After closing tutorial, scroll to voting panel if board is currently visible.
+- Keep modal width compact.
+- Use short text only.
+- Do not require reading a long page before playing.
+- Make `How to Play` accessible near the top.
+
+Potential helper:
+
+```ts
+document.querySelector('[data-tutorial="piece-grid"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+```
+
+## Desktop-Specific Tutorial Behavior
+
+Desktop tutorial should point out that board and voting are side-by-side.
+
+Required explanation:
+
+```text
+The board is on the left. Your action panel is on the right.
+```
+
+## Tutorial Reset
+
+Add reset mechanism:
+
+- `/how-to-play` has `Reset tutorial` button.
+- Arena `How to Play` button always opens tutorial.
+- Optional localStorage reset:
+
+```ts
+localStorage.removeItem('chessstake_tutorial_seen')
+localStorage.removeItem('chessstake_first_vote_done')
+```
+
+## Tutorial QA Script
+
+Manual QA checklist:
+
+- Open arena in fresh browser profile.
+- Tutorial opens automatically.
+- Step text explains what to do, not just concept.
+- Skip closes modal and does not reopen on refresh.
+- How to Play reopens modal.
+- User can select team after modal.
+- Wrong-turn message is clear.
+- Disabled piece explanation is visible.
+- Mobile: voting appears directly after board.
+- `/how-to-play` loads and explains common confusion.
+- Analytics calls do not break if API fails.
+
+## Tutorial Success Metrics
+
+Track:
+
+- Tutorial opened.
+- Tutorial skipped.
+- Tutorial completed.
+- Step where users drop off.
+- Team selected after tutorial.
+- First vote after tutorial.
+- How-to-play page visits.
+- Agent creation after tutorial.
+
+Success criteria:
+
+- 50%+ first-time users select a team.
+- 25%+ first-time users submit a vote.
+- Fewer tester questions about what to click first.
+- Users can explain the core loop after one tutorial pass.
+
 ## Current State
 
 The project already has the technical foundation:

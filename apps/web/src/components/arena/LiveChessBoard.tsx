@@ -47,7 +47,7 @@ export const LiveChessBoard: React.FC = () => {
   };
 
   return (
-    <div className="relative aspect-square w-full max-w-[min(640px,calc(100vh-80px))] overflow-hidden rounded-2xl bg-[#2b1b12] shadow-2xl shadow-black/40 ring-4 ring-[#7a4c25]">
+    <div data-tutorial="board" className="relative aspect-square w-full max-w-[min(640px,calc(100vh-80px))] overflow-hidden rounded-2xl bg-[#2b1b12] shadow-2xl shadow-black/40 ring-4 ring-[#7a4c25]">
       <img
         src="/assets/chess/Board.png"
         alt="Chess board"

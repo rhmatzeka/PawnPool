@@ -8,7 +8,7 @@ export const GameStatusPanel: React.FC = () => {
   const statusLabel = status === 'ACTIVE' ? `Active (Turn ${turnNumber})` : result || status;
 
   return (
-    <div className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-wrap justify-between items-center gap-2 text-xs">
+    <div data-tutorial="turn-status" className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-wrap justify-between items-center gap-2 text-xs">
       <div className="flex items-center gap-3">
         <div className="flex flex-col">
           <span className="text-[10px] text-[#eedcbf]/60 uppercase font-bold tracking-wider leading-none">

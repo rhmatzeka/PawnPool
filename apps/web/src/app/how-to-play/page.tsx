@@ -2,28 +2,36 @@ import Link from 'next/link';
 
 const SECTIONS = [
   {
-    title: 'What is ChessStake?',
-    body: 'ChessStake is a live AI chess arena. Players join White or Black, back a piece each turn, and watch the AI resolve the best legal move for the winning piece.',
+    title: 'Do I drag pieces?',
+    body: 'No. The board is live display. You vote for a piece type, then AI chooses the legal move.',
   },
   {
-    title: 'How turns work',
-    body: 'Only the team whose turn it is can vote. If you joined Black and it is White turn, wait until Black turn comes back.',
+    title: 'What do I click first?',
+    body: 'Start with the team selector. Choose WHITE or BLACK, then wait until it is your team turn.',
   },
   {
-    title: 'How voting works',
-    body: 'Pick a legal piece type. The highest-backed legal piece controls the turn. Disabled pieces have no legal moves in the current board position.',
+    title: 'Why can\'t I click a piece?',
+    body: 'Either it is not your team turn, or that piece has no legal move in the current board position.',
   },
   {
-    title: 'What AI does',
-    body: 'Chess rules are validated with chess.js. The AI strategy resolver chooses from legal moves only and updates the board after the timer ends.',
+    title: 'How does voting work?',
+    body: 'Pick a legal piece card. The highest-backed legal piece controls the turn when the timer ends.',
   },
   {
-    title: 'What agents do',
-    body: 'Your personal AI agent can recommend a piece to back. In MVP mode, recommendations are assistive and you stay in control before submitting.',
+    title: 'What does AI do?',
+    body: 'AI only chooses from legal moves for the winning piece. chess.js validates the rules.',
   },
   {
-    title: 'Demo vs on-chain mode',
-    body: 'The current MVP may use demo accounting unless on-chain betting is enabled. Mainnet real-money automation remains blocked for safety.',
+    title: 'What is an agent?',
+    body: 'An agent is an optional helper that recommends which piece to back. You can still play manually.',
+  },
+  {
+    title: 'What is the timer?',
+    body: 'The timer shows how long the current team has to vote. When it reaches 0, the AI resolves the move.',
+  },
+  {
+    title: 'Is this real ETH?',
+    body: 'MVP mode may use demo accounting unless on-chain mode is enabled. Mainnet automation is blocked for safety.',
   },
 ];
 
@@ -51,6 +59,10 @@ export default function HowToPlayPage() {
           <Link href="/arena/live" className="rounded-xl bg-[#d6a15f] px-5 py-3 text-center font-black text-[#120d0a]">Enter Live Arena</Link>
           <Link href="/agents/create" className="rounded-xl border border-[#d6a15f]/40 px-5 py-3 text-center font-black text-[#f3dfbf]">Create Agent</Link>
           <Link href="/matches" className="rounded-xl border border-[#f3dfbf]/15 px-5 py-3 text-center font-black text-[#f3dfbf]/80">View Matches</Link>
+        </div>
+
+        <div className="mt-5 rounded-xl border border-[#b58863]/20 bg-[#211713] p-4 text-sm text-[#f3dfbf]/60">
+          Want to see the tutorial again? Open the arena and click <span className="font-black text-[#d6a15f]">How to Play</span>.
         </div>
       </div>
     </main>

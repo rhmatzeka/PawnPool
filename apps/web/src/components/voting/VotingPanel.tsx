@@ -53,6 +53,16 @@ export const VotingPanel: React.FC = () => {
     const amount = BigInt(vote.totalAmountWei);
     return amount > max ? amount : max;
   }, BigInt(0));
+  const checklistTitle = !myLockedTeam
+    ? 'Start here'
+    : myLockedTeam !== currentTurn
+      ? `You joined ${myLockedTeam}`
+      : 'Your team is moving';
+  const checklistBody = !myLockedTeam
+    ? 'Choose WHITE or BLACK first. After that, you can vote when your team is moving.'
+    : myLockedTeam !== currentTurn
+      ? `Current turn: ${currentTurn}. Wait for ${myLockedTeam}'s turn before voting.`
+      : 'Pick one legal piece below. The highest-backed piece controls this turn.';
 
   const handleVote = async (piece: PieceType) => {
     if (turnStatus !== 'OPEN' || !activeGameId) return;
@@ -232,7 +242,7 @@ export const VotingPanel: React.FC = () => {
   return (
     <div className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col gap-2.5">
       {/* Team Selection Section */}
-      <div className="border-b border-[#b58863]/20 pb-2.5">
+      <div data-tutorial="team-selector" className="border-b border-[#b58863]/20 pb-2.5">
         <h3 className="text-[10px] font-bold text-[#eedcbf] uppercase tracking-wider mb-1.5">
           Select Your Team
         </h3>
@@ -269,19 +279,15 @@ export const VotingPanel: React.FC = () => {
       <div>
         {!firstVoteDone && (
           <div className="mb-3 rounded-lg border border-[#d6a15f]/25 bg-[#120d0a] p-3 text-xs text-[#eedcbf]/70">
-            <div className="mb-2 font-black uppercase tracking-wider text-[#d6a15f]">First Turn Checklist</div>
-            <div className="grid gap-1">
-              <span>{myLockedTeam ? '[x]' : '[ ]'} Choose a team</span>
-              <span>{myLockedTeam === currentTurn ? '[ ]' : '[ ]'} Pick a legal piece when it is your turn</span>
-              <span>[ ] Wait for the AI move</span>
-            </div>
+            <div className="mb-1 font-black uppercase tracking-wider text-[#d6a15f]">{checklistTitle}</div>
+            <p className="leading-5">{checklistBody}</p>
           </div>
         )}
 
         <div className="mb-4">
           <div className="mb-0.5 flex items-center justify-between gap-3">
             <h3 className="text-[11px] font-bold text-[#eedcbf] uppercase tracking-wider">
-              Back This Turn
+              Step 2: Choose a Piece
             </h3>
           </div>
           <p className="text-[11px] text-[#eedcbf]/60">
@@ -293,7 +299,7 @@ export const VotingPanel: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-2 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-2">
+        <div data-tutorial="agent-panel" className="mb-2 rounded-lg border border-[#b58863]/20 bg-[#1e1713] p-2">
           <div className="mb-1.5 flex items-center justify-between gap-3">
             <div>
               <h4 className="text-[11px] font-black uppercase tracking-wider text-[#eedcbf]">Use My Agent</h4>
@@ -338,7 +344,7 @@ export const VotingPanel: React.FC = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-1.5">
+        <div data-tutorial="piece-grid" className="grid grid-cols-3 gap-1.5">
           {(Object.keys(PIECE_PRICES) as PieceType[]).map((piece) => {
             const price = PIECE_PRICES[piece];
             const name = PIECE_NAMES[piece];

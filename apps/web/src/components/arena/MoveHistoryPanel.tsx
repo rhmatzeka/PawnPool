@@ -7,7 +7,7 @@ export const MoveHistoryPanel: React.FC = () => {
   const { moveHistory } = useArenaStore();
 
   return (
-    <div className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col h-[90px] md:h-[110px]">
+    <div data-tutorial="move-history" className="w-full bg-[#2d241e] p-2.5 rounded-xl border border-[#b58863]/30 shadow-md flex flex-col h-[90px] md:h-[110px]">
       <div className="border-b border-[#b58863]/10 pb-2 mb-2 flex justify-between items-center">
         <h3 className="text-xs font-bold text-[#eedcbf] uppercase tracking-wider">
           Move History

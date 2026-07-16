@@ -21,7 +21,7 @@ export const RewardPoolPanel: React.FC = () => {
   const leader = whitePool === blackPool ? 'Even momentum' : whitePool > blackPool ? 'White leads' : 'Black leads';
 
   return (
-    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md">
+    <div data-tutorial="reward-pool" className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md">
       <div className="text-center mb-2">
         <span className="text-[10px] text-[#eedcbf]/60 uppercase font-bold tracking-wider">
           Total Prize Pool

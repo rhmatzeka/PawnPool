@@ -6,24 +6,40 @@ const TUTORIAL_SEEN_KEY = 'chessstake_tutorial_seen';
 
 const STEPS = [
   {
-    title: 'Welcome to ChessStake',
-    body: 'Join a team, back a piece, and watch the AI make the best legal move for the crowd decision.',
+    title: '1. Look at the Board',
+    body: 'The board shows the live chess position. You do not drag pieces manually. Your job is to choose which piece type your team should move.',
   },
   {
-    title: 'Choose White or Black',
-    body: 'Pick a team first. You can vote when it is your team\'s turn, and you wait when the other team moves.',
+    title: '2. Choose Your Team',
+    body: 'Start by clicking WHITE or BLACK in the action panel. You can only vote when the current turn matches your team.',
   },
   {
-    title: 'Back a Legal Piece',
-    body: 'Choose Pawn, Knight, Bishop, Rook, Queen, or King. The highest-backed legal piece controls the turn.',
+    title: '3. Check Whose Turn It Is',
+    body: 'If you joined BLACK but the turn says WHITE, your piece buttons stay locked. Wait until BLACK turn comes back.',
   },
   {
-    title: 'AI Resolves the Move',
-    body: 'The AI chooses from legal chess moves only. The board updates automatically when the timer ends.',
+    title: '4. Choose a Piece Card',
+    body: 'Click a legal piece card like Pawn, Knight, Bishop, Rook, Queen, or King. The highest-backed legal piece wins this turn.',
   },
   {
-    title: 'Optional: Use Your Agent',
-    body: 'Create a personal AI agent to recommend what piece to back. You still confirm before submitting.',
+    title: '5. Disabled Cards Are Normal',
+    body: 'A dark or disabled card means either it is not your team\'s turn or that piece has no legal move right now.',
+  },
+  {
+    title: '6. Optional: Use Your Agent',
+    body: 'Your AI agent can recommend which piece to back. It does not vote unless you click confirm or enable demo auto-vote.',
+  },
+  {
+    title: '7. Watch the Timer',
+    body: 'When the timer reaches 0, voting closes. The piece with the most support is locked for AI resolution.',
+  },
+  {
+    title: '8. AI Makes the Move',
+    body: 'AI chooses the best legal move for the winning piece. Then the board updates and the next team gets a turn.',
+  },
+  {
+    title: '9. Repeat Each Turn',
+    body: 'Keep choosing pieces when it is your team\'s turn. The match continues until checkmate, draw, max turns, or cancellation.',
   },
 ];
 
@@ -77,6 +93,9 @@ export default function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
     localStorage.setItem(TUTORIAL_SEEN_KEY, 'true');
     trackTutorial('tutorial_completed');
     onClose();
+    window.setTimeout(() => {
+      document.querySelector('[data-tutorial="team-selector"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 80);
   };
 
   const handleSkip = () => {
@@ -106,13 +125,20 @@ export default function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
           ))}
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
+        <div className="mt-4 rounded-xl bg-[#120d0a] p-3 text-xs text-[#f3dfbf]/55">
+          Tip: If you are unsure what to click first, choose a team, then choose one legal piece card when it is your turn.
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-between">
           <button type="button" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} className="rounded-xl border border-[#d6a15f]/30 px-4 py-2 text-sm font-black text-[#f3dfbf] disabled:cursor-not-allowed disabled:opacity-30">
             Back
           </button>
-          <button type="button" onClick={isLast ? finish : () => setStep(step + 1)} className="rounded-xl bg-[#d6a15f] px-4 py-2 text-sm font-black text-[#120d0a]">
-            {isLast ? 'Start Playing' : 'Next'}
-          </button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <a href="/how-to-play" className="rounded-xl border border-[#d6a15f]/30 px-4 py-2 text-center text-sm font-black text-[#f3dfbf]">Full Guide</a>
+            <button type="button" onClick={isLast ? finish : () => setStep(step + 1)} className="rounded-xl bg-[#d6a15f] px-4 py-2 text-sm font-black text-[#120d0a]">
+              {isLast ? 'Start Playing' : 'Next'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

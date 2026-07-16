@@ -113,7 +113,7 @@ export const VotingTimer: React.FC = () => {
   const isLowTime = timeLeft <= 5;
 
   return (
-    <div className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md">
+    <div data-tutorial="timer" className="w-full bg-[#2d241e] p-3 rounded-xl border border-[#b58863]/30 shadow-md">
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs uppercase tracking-wider font-semibold text-[#eedcbf]/60">
           Turn Status: <span className="text-[#eedcbf]">{turnStatus}</span>
